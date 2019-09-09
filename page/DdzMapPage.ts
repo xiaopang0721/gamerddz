@@ -20,11 +20,11 @@ module gameddz.page {
     const MONEY_FLY_TIME = 50; // 金币飞行时间间隔
     const MAX_COUNT = 3;  //最大人数
     export class DdzMapPage extends game.gui.base.Page {
-        private _viewUI: ui.game_ui.doudizhu.DouDiZhuUI;
-        private _feijiView: ui.game_ui.doudizhu.component.feijiUI;
-        private _wangZhaWiew: ui.game_ui.doudizhu.component.HuoJianUI;
-        private _shunZiView: ui.game_ui.doudizhu.component.shunziUI;
-        private _bombView: ui.game_ui.doudizhu.component.bombUI;
+        private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhuUI;
+        private _feijiView: ui.nqp.game_ui.doudizhu.component.feijiUI;
+        private _wangZhaWiew: ui.nqp.game_ui.doudizhu.component.HuoJianUI;
+        private _shunZiView: ui.nqp.game_ui.doudizhu.component.shunziUI;
+        private _bombView: ui.nqp.game_ui.doudizhu.component.bombUI;
         private _mapInfo: DdzMapInfo;
         private _ddzMgr: DdzMgr;
         private _ddzStory: any;
@@ -80,10 +80,10 @@ module gameddz.page {
         // 页面初始化函数
         protected init(): void {
             this._viewUI = this.createView('game_ui.doudizhu.DouDiZhuUI');
-            this._feijiView = new ui.game_ui.doudizhu.component.feijiUI();
-            this._wangZhaWiew = new ui.game_ui.doudizhu.component.HuoJianUI();
-            this._shunZiView = new ui.game_ui.doudizhu.component.shunziUI();
-            this._bombView = new ui.game_ui.doudizhu.component.bombUI();
+            this._feijiView = new ui.nqp.game_ui.doudizhu.component.feijiUI();
+            this._wangZhaWiew = new ui.nqp.game_ui.doudizhu.component.HuoJianUI();
+            this._shunZiView = new ui.nqp.game_ui.doudizhu.component.shunziUI();
+            this._bombView = new ui.nqp.game_ui.doudizhu.component.bombUI();
             this.addChild(this._viewUI);
             this._pageHandle = PageHandle.Get("DdzMapPage");//额外界面控制器
             if (!this._ddzMgr) {

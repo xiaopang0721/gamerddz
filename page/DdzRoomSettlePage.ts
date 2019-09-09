@@ -3,7 +3,7 @@
 */
 module gameddz.page {
     export class DdzRoomSettlePage extends game.gui.base.Page {
-        private _viewUI: ui.game_ui.doudizhu.JieSuan_FangKaUI;
+        private _viewUI: ui.nqp.game_ui.doudizhu.JieSuan_FangKaUI;
         private _isGameEnd: boolean = false;  //是否结束
 
         constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {

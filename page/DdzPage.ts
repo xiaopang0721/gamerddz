@@ -3,7 +3,7 @@
 */
 module gameddz.page {
 	export class DdzPage extends game.gui.base.Page {
-		private _viewUI: ui.game_ui.doudizhu.DouDiZhu_HUDUI;
+		private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhu_HUDUI;
 		private _player: any;
 		private _ddzMgr: DdzMgr;
 		private _isRoomcardType: boolean = false;
