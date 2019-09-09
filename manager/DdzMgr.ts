@@ -880,11 +880,11 @@ module gameddz.manager {
 		}
 
 		//充值弹框
-		alert(str: string, ecb: Function = null, ccb: Function = null, isOnlyOK: boolean = true, okSkin?: string): void {
+		alert(str: string, ecb: Function = null, ccb: Function = null, isOnlyOK: boolean = true, okSkin?: string, titleSkin?: string, cancleSkin?: string): void {
 			if (!this._game.uiRoot.general.isOpened(TongyongPageDef.PAGE_TONGYONG_TIPS)) {
 				this._game.uiRoot.general.open(TongyongPageDef.PAGE_TONGYONG_TIPS, (tip: TongyongTipsPage) => {
 					tip.isOnlyOK = isOnlyOK;
-					tip.setInfo(str, ecb, ccb, okSkin);
+					tip.setInfo(str, ecb, ccb, okSkin, titleSkin, cancleSkin);
 				});
 			}
 		}
