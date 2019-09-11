@@ -94,7 +94,7 @@ module gameddz.page {
 						page.dataSource = 3;//绑定手机类型
 					})
 				}, () => {
-				}, false, PathGameTongyong.ui_tongyong_general + "btn_qw.png");
+				}, false, TongyongPageDef.TIPS_SKIN_STR['qw']);
 				result = true;
 			}
 			return result;
