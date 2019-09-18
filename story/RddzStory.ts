@@ -1,7 +1,7 @@
 /**
 * 斗地主
 */
-module gameddz.story {
+module gamerddz.story {
 	const enum MAP_STATUS {
 		MAP_STATE_NONE = 0,			//初始化
 		MAP_STATE_CARDROOM_CREATED = 1,  	//房间创建后
@@ -16,10 +16,10 @@ module gameddz.story {
 		MAP_STATE_WAIT = 10,      	//等待下一局
 		MAP_STATE_END = 11,			//结束
 	}
-	export class DdzCardRoomStory extends gamecomponent.story.StoryRoomCardBase {
-		private _ddzMgr: DdzMgr;
+	export class RddzStory extends gamecomponent.story.StoryRoomCardBase {
+		private _ddzMgr: RddzMgr;
 		private _cardsTemp: any = [];
-		private _ddzMapInfo: DdzMapInfo;
+		private _ddzMapInfo: RddzMapInfo;
 		private _battleIndex = -1;
 
 		constructor(v: Game, mapid: string, maplv: number, dataSource: any) {
@@ -29,11 +29,11 @@ module gameddz.story {
 
 		init() {
 			if (!this._ddzMgr) {
-				this._ddzMgr = new DdzMgr(this._game);
+				this._ddzMgr = new RddzMgr(this._game);
 			}
 			this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_LOAD_MAP, this, this.onIntoNewMap);
 			this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_MAPINFO_CHANGE, this, this.onMapInfoChange);
-			this._game.sceneObjectMgr.on(DdzMapInfo.EVENT_DDZ_BATTLE_CHECK, this, this.updateBattledInfo);
+			this._game.sceneObjectMgr.on(RddzMapInfo.EVENT_DDZ_BATTLE_CHECK, this, this.updateBattledInfo);
 
 		}
 
@@ -54,12 +54,12 @@ module gameddz.story {
 
 			this.onMapInfoChange();
 			this._game.uiRoot.closeAll();
-			this._game.uiRoot.HUD.open(DdzPageDef.PAGE_DDZ_MAP);
+			this._game.uiRoot.HUD.open(RddzPageDef.PAGE_DDZ_MAP);
 		}
 
 		private onMapInfoChange(): void {
 			let mapinfo = this._game.sceneObjectMgr.mapInfo;
-			this._ddzMapInfo = mapinfo as DdzMapInfo;
+			this._ddzMapInfo = mapinfo as RddzMapInfo;
 			if (mapinfo) {
 				this.resetBattleIdx();
 				this.onUpdateCardInfo();
@@ -68,7 +68,7 @@ module gameddz.story {
 
 		//重连之后，战斗日志从哪开始刷
 		private resetBattleIdx(): void {
-			let mapinfo = this._game.sceneObjectMgr.mapInfo as DdzMapInfo;
+			let mapinfo = this._game.sceneObjectMgr.mapInfo as RddzMapInfo;
 			if (!mapinfo) return;
 			let battleInfoMgr = mapinfo.battleInfoMgr;
 			for (let i = 0; i < battleInfoMgr.info.length; i++) {
@@ -80,7 +80,7 @@ module gameddz.story {
 		}
 
 		private updateBattledInfo(): void {
-			let mapinfo = this._game.sceneObjectMgr.mapInfo as DdzMapInfo;
+			let mapinfo = this._game.sceneObjectMgr.mapInfo as RddzMapInfo;
 			let mainUnit: Unit = this._game.sceneObjectMgr.mainUnit;
 			if (!mainUnit) return;
 			let battleInfoMgr = mapinfo.battleInfoMgr;
@@ -94,7 +94,7 @@ module gameddz.story {
 					if (idx == mainIdx) {
 						this._ddzMgr.allCards = [];
 						for (let k = 0; k < battleInfo.Cards.length; k++) {
-							let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, DdzData) as DdzData;
+							let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
 							card.pos = new Vector2(981, 113);
 							card.Init(battleInfo.Cards[k]);
 							this._ddzMgr.allCards.push(card);
@@ -125,7 +125,7 @@ module gameddz.story {
 						this._ddzMgr.showEndCards(battleInfo.Cards)
 						if (battleInfo.SeatIndex == mainIdx) {
 							for (let k = 0; k < battleInfo.Cards.length; k++) {
-								let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, DdzData) as DdzData;
+								let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
 								if (this._ddzMgr.isReLogin) {
 									card.pos = new Vector2(640, 625);
 								} else {
@@ -162,7 +162,7 @@ module gameddz.story {
 		clear() {
 			this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_LOAD_MAP, this, this.onIntoNewMap);
 			this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_MAPINFO_CHANGE, this, this.onMapInfoChange);
-			this._game.sceneObjectMgr.off(DdzMapInfo.EVENT_DDZ_BATTLE_CHECK, this, this.updateBattledInfo);
+			this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_BATTLE_CHECK, this, this.updateBattledInfo);
 			if (this._ddzMgr) {
 				this._ddzMgr.clear();
 				this._ddzMgr = null;

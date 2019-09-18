@@ -1,7 +1,7 @@
 /**
 * 斗地主
 */
-module gameddz.manager {
+module gamerddz.manager {
 	const enum CARD_TYPE {
 		CARDS_TYPE_WUXIAO = 0, //无效牌
 		CARDS_TYPE_DAN = 1, //单张
@@ -20,7 +20,7 @@ module gameddz.manager {
 	}
 	const MIN_CHECKTIME: number = 1000;//最小检测时间间隔(毫秒)
 
-	export class DdzMgr extends gamecomponent.managers.PlayingCardMgrBase<DdzData>{
+	export class RddzMgr extends gamecomponent.managers.PlayingCardMgrBase<RddzData>{
 		public isReLogin: boolean;		//是否断线重连，各种判断操作用的
 		public isShowCards: boolean = false;	//是否翻牌
 		public allCards: any = [];	//手牌
@@ -52,7 +52,7 @@ module gameddz.manager {
 
 		set unitOffline(v) {
 			this._unitOffline = v;
-			this.event(DdzMgr.MAPINFO_OFFLINE)
+			this.event(RddzMgr.MAPINFO_OFFLINE)
 		}
 
 		get totalUnitCount() {
@@ -880,11 +880,11 @@ module gameddz.manager {
 		}
 
 		//充值弹框
-		alert(str: string, ecb: Function = null, ccb: Function = null, isOnlyOK: boolean = true, okSkin?: string): void {
+		alert(str: string, ecb: Function = null, ccb: Function = null, isOnlyOK: boolean = true, okSkin?: string, titleSkin?: string, cancleSkin?: string): void {
 			if (!this._game.uiRoot.general.isOpened(TongyongPageDef.PAGE_TONGYONG_TIPS)) {
 				this._game.uiRoot.general.open(TongyongPageDef.PAGE_TONGYONG_TIPS, (tip: TongyongTipsPage) => {
 					tip.isOnlyOK = isOnlyOK;
-					tip.setInfo(str, ecb, ccb, okSkin);
+					tip.setInfo(str, ecb, ccb, okSkin, titleSkin, cancleSkin);
 				});
 			}
 		}
@@ -896,7 +896,7 @@ module gameddz.manager {
 			if (idx == 0) return;
 			let count = 0;
 			for (let i = 0; i < this.allCards.length; i++) {
-				let card = this.allCards[i] as DdzData;
+				let card = this.allCards[i] as RddzData;
 				if (card) {
 					card.myOwner(idx, idx, i);
 					card.index = i;
@@ -908,7 +908,7 @@ module gameddz.manager {
 		//对牌进行排序,大到小
 		SortCards(cards: any[]) {
 			if (!cards) return;
-			cards.sort((a: DdzData, b: DdzData) => {
+			cards.sort((a: RddzData, b: RddzData) => {
 				return a.Compare(b, true);
 			});
 		}
@@ -916,7 +916,7 @@ module gameddz.manager {
 		//对牌进行排序,小到大
 		SortCardsSmall(cards: any[]) {
 			if (!cards) return;
-			cards.sort((a: DdzData, b: DdzData) => {
+			cards.sort((a: RddzData, b: RddzData) => {
 				return b.Compare(a, true);
 			});
 		}
@@ -946,7 +946,7 @@ module gameddz.manager {
 		dealEndCards() {
 			this.endCards = [];
 			for (let i = 0; i < 3; i++) {
-				let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, DdzData) as DdzData;
+				let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
 				let posX = this._endCardPos[0] + this._endCardPos[2] * i;
 				let posY = this._endCardPos[1];
 				card.pos = new Vector2(posX, posY);
@@ -961,7 +961,7 @@ module gameddz.manager {
 		refapai() {
 			let cardsPos = this.getCardsPosTemp(this.allCards.length, true);
 			for (let i = 0; i < this.allCards.length; i++) {
-				let card = this.allCards[i] as DdzData;
+				let card = this.allCards[i] as RddzData;
 				let posX = cardsPos[i][0];
 				let posY = cardsPos[i][1];
 				if (card) {
@@ -973,7 +973,7 @@ module gameddz.manager {
 		//显示底牌
 		showEndCards(cards: any) {
 			for (let i = 0; i < this.endCards.length; i++) {
-				let card = this.endCards[i] as DdzData;
+				let card = this.endCards[i] as RddzData;
 				card.Init(cards[i].GetVal());
 				if (card) {
 					card.fapai();
@@ -992,7 +992,7 @@ module gameddz.manager {
 			if (seat == mainIdx) {
 				let cardsPos = this.getCardsPosTemp(cards.length, false);
 				for (let i = 0; i < cards.length; i++) {
-					let card: DdzData;
+					let card: RddzData;
 					for (let k = 0; k < this.allCards.length; k++) {
 						if (cards[i].GetVal() == this.allCards[k].GetVal()) {
 							card = this.allCards[k];
@@ -1016,7 +1016,7 @@ module gameddz.manager {
 				for (let i = 0; i < cards.length; i++) {
 					let posX = this._playCardsPos[posIdx - 1][0] + i * this._playCardsPos[posIdx - 1][2];
 					let posY = this._playCardsPos[posIdx - 1][1];
-					let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, DdzData) as DdzData;
+					let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
 					card.pos = new Vector2(posX, posY);
 					card.Init(cards[i].GetVal());
 					if (card) {
@@ -1045,7 +1045,7 @@ module gameddz.manager {
 			for (let i = 0; i < cards.length; i++) {
 				let posX = this._playCardsPos[posIdx - 1][0] + i * this._playCardsPos[posIdx - 1][2];
 				let posY = this._playCardsPos[posIdx - 1][1];
-				let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, DdzData) as DdzData;
+				let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
 				card.pos = new Vector2(posX, posY);
 				card.Init(cards[i]);
 				if (card) {
@@ -1128,7 +1128,7 @@ module gameddz.manager {
 		// 清理卡牌对象
 		clearCardObject(): void {
 			this._game.sceneObjectMgr.ForEachObject((obj: any) => {
-				if (obj instanceof DdzData) {
+				if (obj instanceof RddzData) {
 					this._game.sceneObjectMgr.clearOfflineObject(obj);
 				}
 			})

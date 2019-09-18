@@ -1,17 +1,17 @@
 /**
 * 斗地主-HUD
 */
-module gameddz.page {
-	export class DdzPage extends game.gui.base.Page {
-		private _viewUI: ui.game_ui.doudizhu.DouDiZhu_HUDUI;
+module gamerddz.page {
+	export class RddzPage extends game.gui.base.Page {
+		private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhu_HUDUI;
 		private _player: any;
-		private _ddzMgr: DdzMgr;
+		private _ddzMgr: RddzMgr;
 		private _isRoomcardType: boolean = false;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);
 			this._asset = [
-				Path_game_ddz.atlas_game_ui + "doudizhu.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong+ "general.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong+ "hud.atlas",
@@ -26,7 +26,7 @@ module gameddz.page {
 			this._viewUI = this.createView('game_ui.doudizhu.DouDiZhu_HUDUI', ["game_ui.tongyong.HudUI"]);
 			this.addChild(this._viewUI);
 			this._game.playMusic(Path.music + "ddz/ddz_BGM.mp3");
-			this._ddzMgr = new DdzMgr(this._game);
+			this._ddzMgr = new RddzMgr(this._game);
 
 			for (let index = 0; index < this._viewUI.box_right.numChildren; index++) {
 				this._viewUI.box_right._childs[index].visible = false;
@@ -45,7 +45,7 @@ module gameddz.page {
 
 			this._viewUI.box_normal.visible = !this._isRoomcardType;
 			this._viewUI.box_roomcard.visible = this._isRoomcardType;
-			(this._viewUI.view_hud as TongyongHudPage).onOpen(this._game, DdzPageDef.GAME_NAME, this._isRoomcardType);
+			(this._viewUI.view_hud as TongyongHudNqpPage).onOpen(this._game, RddzPageDef.GAME_NAME, this._isRoomcardType);
 			if (this._isRoomcardType) {
 				for (let index = 0; index < this._viewUI.box_roomcard.numChildren; index++) {
 					this._viewUI.box_right._childs[index].visible = true;
@@ -76,10 +76,10 @@ module gameddz.page {
 			if (this.chkPlayerIsGuest()) return;
 			switch (target) {
 				case this._viewUI.img_room_create:
-					this._game.uiRoot.general.open(DdzPageDef.PAGE_DDZ_CREATE_CARDROOM);
+					this._game.uiRoot.general.open(RddzPageDef.PAGE_DDZ_CREATE_CARDROOM);
 					break;
 				case this._viewUI.img_room_join:
-					this._game.uiRoot.general.open(DdzPageDef.PAGE_DDZ_JOIN_CARDROOM);
+					this._game.uiRoot.general.open(RddzPageDef.PAGE_DDZ_JOIN_CARDROOM);
 					break;
 				default:
 					break;

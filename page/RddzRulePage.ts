@@ -1,7 +1,7 @@
 /**
 * 斗地主-规则
 */
-module gameddz.page {
+module gamerddz.page {
 	const enum TYPE_INDEX {
 		TYPE_WANFA = 0,
 		TYPE_TYPE = 1,
@@ -9,15 +9,15 @@ module gameddz.page {
 		TYPE_BEISHU = 3,
 		TYPE_POINT = 4,
 	}
-	export class DdzRulePage extends game.gui.base.Page {
-		private _viewUI: ui.game_ui.doudizhu.DouDiZhu_GuiZeUI;
+	export class RddzRulePage extends game.gui.base.Page {
+		private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhu_GuiZeUI;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);
 			this._isNeedBlack = true;
 			this._isClickBlack = true;
 			this._asset = [
-				Path_game_ddz.atlas_game_ui + "doudizhu.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
 			];
 		}

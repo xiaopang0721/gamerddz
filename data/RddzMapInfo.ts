@@ -1,18 +1,18 @@
 /**
 * 斗地主
 */
-module gameddz.data {
-	export class DdzMapInfo extends gamecomponent.object.MapInfoT<DdzData> {
+module gamerddz.data {
+	export class RddzMapInfo extends gamecomponent.object.MapInfoT<RddzData> {
 		//地图状态变更
-		static EVENT_DDZ_STATUS_CHECK: string = "DdzMapInfo.EVENT_DDZ_STATUS_CHECK";
+		static EVENT_DDZ_STATUS_CHECK: string = "RddzMapInfo.EVENT_DDZ_STATUS_CHECK";
 		//战斗体更新
-		static EVENT_DDZ_BATTLE_CHECK: string = "DdzMapInfo.EVENT_DDZ_BATTLE_CHECK";
+		static EVENT_DDZ_BATTLE_CHECK: string = "RddzMapInfo.EVENT_DDZ_BATTLE_CHECK";
 		//倒计时时间戳更新
-		static EVENT_DDZ_COUNT_DOWN: string = "DdzMapInfo.EVENT_DDZ_COUNT_DOWN";
+		static EVENT_DDZ_COUNT_DOWN: string = "RddzMapInfo.EVENT_DDZ_COUNT_DOWN";
 		private isFirst: boolean = false;	//只是显示详情空行用的
 
 		constructor(v: SceneObjectMgr) {
-			super(v, () => { return new DdzData() });
+			super(v, () => { return new RddzData() });
 		}
 
 		onUpdate(flags: number, mask: UpdateMask, strmask: UpdateMask): void {
@@ -20,13 +20,13 @@ module gameddz.data {
 			let isNew = flags & core.obj.OBJ_OPT_NEW;
 			if (isNew || mask.GetBit(MapField.MAP_INT_BATTLE_INDEX)) {
 				this._battleInfoMgr.OnUpdate();
-				this._sceneObjectMgr.event(DdzMapInfo.EVENT_DDZ_BATTLE_CHECK);
+				this._sceneObjectMgr.event(RddzMapInfo.EVENT_DDZ_BATTLE_CHECK);
 			}
 			if (isNew || mask.GetBit(MapField.MAP_INT_MAP_BYTE)) {
-				this._sceneObjectMgr.event(DdzMapInfo.EVENT_DDZ_STATUS_CHECK);
+				this._sceneObjectMgr.event(RddzMapInfo.EVENT_DDZ_STATUS_CHECK);
 			}
 			if (isNew || mask.GetBit(MapField.MAP_INT_COUNT_DOWN)) {
-				this._sceneObjectMgr.event(DdzMapInfo.EVENT_DDZ_COUNT_DOWN);
+				this._sceneObjectMgr.event(RddzMapInfo.EVENT_DDZ_COUNT_DOWN);
 			}
 		}
 
