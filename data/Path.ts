@@ -1,7 +1,7 @@
 /**
 * 路径配置
 */
-module gameddz.data {
+module gamerddz.data {
 	export class Path {
 		static readonly music_ddz: string = 'music/doudizhu/';
 		static readonly ui_ddz: string = "ddz_ui/game_ui/doudizhu/";

@@ -1,8 +1,8 @@
 /**
 * 房卡类型游戏结算页面
 */
-module gameddz.page {
-    export class DdzRoomSettlePage extends game.gui.base.Page {
+module gamerddz.page {
+    export class RddzRoomSettlePage extends game.gui.base.Page {
         private _viewUI: ui.nqp.game_ui.doudizhu.JieSuan_FangKaUI;
         private _isGameEnd: boolean = false;  //是否结束
 
@@ -35,7 +35,7 @@ module gameddz.page {
         protected onBtnTweenEnd(e: LEvent, target: any) {
             switch (target) {                
 				case this._viewUI.btn_create_room:
-                    this._game.uiRoot.general.open(DdzPageDef.PAGE_DDZ_CREATE_CARDROOM);
+                    this._game.uiRoot.general.open(RddzPageDef.PAGE_DDZ_CREATE_CARDROOM);
                     this.close();
 					break;
                 case this._viewUI.btn_back_hud:
@@ -99,7 +99,7 @@ module gameddz.page {
             this._game = game;
             this._data = data;
             this.img_banker.visible = this._data.isDiZhu;
-            this.img_banker.skin = Path_game_ddz.ui_ddz + "tu_dizhu.png";
+            this.img_banker.skin = Path_game_rddz.ui_ddz + "tu_dizhu.png";
             this.img_bg.visible = this._data.isMain;
             this.lab_name.text = this._data.name;
             this.lab_chip.text = this._data.multiple;

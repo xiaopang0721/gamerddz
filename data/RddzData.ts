@@ -1,8 +1,8 @@
 /**
 * 斗地主 
 */
-module gameddz.data {
-	export class DdzData extends gamecomponent.object.PlayingPuKeCard {
+module gamerddz.data {
+	export class RddzData extends gamecomponent.object.PlayingPuKeCard {
 		public _ownerIdx: number;		//牌的归属座位
 		public _cardIndex: number;		//牌的序号
 		public _isPlaying: boolean = false;	//是不是打出的牌

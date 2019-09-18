@@ -1,7 +1,7 @@
 /**
 * 位图切片生成工具
 */
-module gameddz {
+module gamerddz {
     export class ClipUtil extends Laya.Box {
         //货币 金色
         public static MONEY_FONT2: any;
@@ -44,8 +44,8 @@ module gameddz {
 
             //斗地主倍数
             this.DDZ_BEISHU = {
-                source: Path_game_ddz.atlas_game_ui + "doudizhu.atlas",
-                url: Path_game_ddz.ui_ddz + 'clip_xq.png',
+                source: Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
+                url: Path_game_rddz.ui_ddz + 'clip_xq.png',
                 clipWidth: 32,
                 clipHeight: 36,
                 clipX: 10,
