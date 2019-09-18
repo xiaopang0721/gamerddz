@@ -3,6 +3,6 @@
 */
 module gamerddz.page {
 	export class RddzCreadRoomPage extends gametongyong.page.CreateCardRoomBase {
-		readonly game_id = "ddz";
+		readonly game_id = "rddz";
 	}
 }

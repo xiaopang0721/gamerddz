@@ -42,8 +42,8 @@ module gamerddz.page {
 				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
 				Path.custom_atlas_scene + 'card.atlas',
-				Path.map + 'pz_ddz.png',
-				Path.map_far + 'bg_ddz.jpg'
+				Path.map + 'pz_rddz.png',
+				Path.map_far + 'bg_rddz.jpg'
 			]
 
 			if (WebConfig.needMusicPreload) {
