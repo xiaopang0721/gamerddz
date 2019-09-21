@@ -68,6 +68,7 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/baodan.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/chuntian.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/feiji.atlas",
@@ -183,7 +184,7 @@ module gamerddz.page {
             this._viewUI.view_time.visible = false;
             this._viewUI.img_chupai.visible = false;
             this._viewUI.view_chuntian.ani1.stop();
-            this._viewUI.view_fapai.visible = false;
+            this._viewUI.view_paixie.ani2.gotoAndStop(0);
             this._viewUI.view_xipai.visible = false;
             this._viewUI.view_xipai.ani_xipai.stop();
             this._viewUI.view_paixie.cards.visible = false;
@@ -256,9 +257,9 @@ module gamerddz.page {
                         this._game.network.call_get_roomcard_share(RddzPageDef.GAME_NAME);
                     }
                     break;
-                case this._viewUI.view_cardroom.btn_dismiss://房卡解散
-                    this.masterDismissCardGame();
-                    break;
+                // case this._viewUI.view_cardroom.btn_dismiss://房卡解散
+                //     this.masterDismissCardGame();
+                //     break;
                 case this._viewUI.view_cardroom.btn_start:////房卡开始
                     this.setCardGameStart();
                     break;
@@ -497,7 +498,7 @@ module gamerddz.page {
                 if (!this._ddzMgr.isReLogin) {
                     this._viewUI.view_cardroom.btn_invite.visible = true;
                     this._viewUI.view_cardroom.btn_invite.x = this._ddzStory.isCardRoomMaster() ? 420 : this._viewUI.view_cardroom.btn_start.x;
-                    this._viewUI.view_cardroom.btn_dismiss.visible = this._ddzStory.isCardRoomMaster();
+                    // this._viewUI.view_cardroom.btn_dismiss.visible = this._ddzStory.isCardRoomMaster();
                     this._viewUI.view_cardroom.btn_start.visible = this._ddzStory.isCardRoomMaster();
                 } else {
                     this._viewUI.view_cardroom.visible = false;
@@ -511,11 +512,11 @@ module gamerddz.page {
             if (this.isCardRoomType && isOn) {
                 this._viewUI.view_cardroom.btn_invite.on(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.view_cardroom.btn_start.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.view_cardroom.btn_dismiss.on(LEvent.CLICK, this, this.onBtnClickWithTween);
+                // this._viewUI.view_cardroom.btn_dismiss.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             } else {
                 this._viewUI.view_cardroom.btn_invite.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.view_cardroom.btn_start.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.view_cardroom.btn_dismiss.off(LEvent.CLICK, this, this.onBtnClickWithTween);
+                // this._viewUI.view_cardroom.btn_dismiss.off(LEvent.CLICK, this, this.onBtnClickWithTween);
             }
         }
 
@@ -554,11 +555,9 @@ module gamerddz.page {
             let round = this._mapInfo.GetRound() + 1;
             this._viewUI.text_round.text = "局数：" + round + "/" + this._mapInfo.GetCardRoomGameNumber();
             if (state == MAP_STATUS.MAP_STATE_DEAL) {
-                this._viewUI.view_fapai.visible = true;
-                this._viewUI.view_fapai.ani1.play(0, true);
+                this._viewUI.view_paixie.ani2.play(0, true);
             } else {
-                this._viewUI.view_fapai.visible = false;
-                this._viewUI.view_fapai.ani1.stop();
+                this._viewUI.view_paixie.ani2.gotoAndStop(0);
             }
             this._isPlaying = state >= MAP_STATUS.MAP_STATE_SHUFFLE && state < MAP_STATUS.MAP_STATE_END;
             this._viewUI.view_paixie.cards.visible = state >= MAP_STATUS.MAP_STATE_SHUFFLE && state < MAP_STATUS.MAP_STATE_END;
