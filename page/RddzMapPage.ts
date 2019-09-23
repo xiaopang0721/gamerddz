@@ -256,9 +256,9 @@ module gamerddz.page {
                         this._game.network.call_get_roomcard_share(RddzPageDef.GAME_NAME);
                     }
                     break;
-                case this._viewUI.view_cardroom.btn_dismiss://房卡解散
-                    this.masterDismissCardGame();
-                    break;
+                // case this._viewUI.view_cardroom.btn_dismiss://房卡解散
+                //     this.masterDismissCardGame();
+                //     break;
                 case this._viewUI.view_cardroom.btn_start:////房卡开始
                     this.setCardGameStart();
                     break;
@@ -497,7 +497,7 @@ module gamerddz.page {
                 if (!this._ddzMgr.isReLogin) {
                     this._viewUI.view_cardroom.btn_invite.visible = true;
                     this._viewUI.view_cardroom.btn_invite.x = this._ddzStory.isCardRoomMaster() ? 420 : this._viewUI.view_cardroom.btn_start.x;
-                    this._viewUI.view_cardroom.btn_dismiss.visible = this._ddzStory.isCardRoomMaster();
+                    // this._viewUI.view_cardroom.btn_dismiss.visible = this._ddzStory.isCardRoomMaster();
                     this._viewUI.view_cardroom.btn_start.visible = this._ddzStory.isCardRoomMaster();
                 } else {
                     this._viewUI.view_cardroom.visible = false;
@@ -511,11 +511,11 @@ module gamerddz.page {
             if (this.isCardRoomType && isOn) {
                 this._viewUI.view_cardroom.btn_invite.on(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.view_cardroom.btn_start.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.view_cardroom.btn_dismiss.on(LEvent.CLICK, this, this.onBtnClickWithTween);
+                // this._viewUI.view_cardroom.btn_dismiss.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             } else {
                 this._viewUI.view_cardroom.btn_invite.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.view_cardroom.btn_start.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.view_cardroom.btn_dismiss.off(LEvent.CLICK, this, this.onBtnClickWithTween);
+                // this._viewUI.view_cardroom.btn_dismiss.off(LEvent.CLICK, this, this.onBtnClickWithTween);
             }
         }
 
@@ -1496,7 +1496,7 @@ module gamerddz.page {
             let dataInfo = dataSource;
             this._game.qifuMgr.showFlayAni(this._viewUI.view_player0.img_head, this._viewUI, dataSource, (dataInfo) => {
                 //相对应的玩家精灵做出反应
-                this._qifuTypeImgUrl = StringU.substitute(PathGameTongyong.ui_tongyong_qifu + "f_{0}2.png", this._nameStrInfo[dataInfo.qf_id - 1]);
+                this._qifuTypeImgUrl = StringU.substitute(PathGameTongyong.ui_tongyong_touxiang + "f_{0}2.png", this._nameStrInfo[dataInfo.qf_id - 1]);
                 this.onUpdateUnit(dataInfo.qifu_index);
             });
         }
