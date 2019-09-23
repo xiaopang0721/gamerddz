@@ -68,6 +68,7 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/baodan.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/chuntian.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/feiji.atlas",
@@ -183,7 +184,7 @@ module gamerddz.page {
             this._viewUI.view_time.visible = false;
             this._viewUI.img_chupai.visible = false;
             this._viewUI.view_chuntian.ani1.stop();
-            this._viewUI.view_fapai.visible = false;
+            this._viewUI.view_paixie.ani2.gotoAndStop(0);
             this._viewUI.view_xipai.visible = false;
             this._viewUI.view_xipai.ani_xipai.stop();
             this._viewUI.view_paixie.cards.visible = false;
@@ -554,11 +555,9 @@ module gamerddz.page {
             let round = this._mapInfo.GetRound() + 1;
             this._viewUI.text_round.text = "局数：" + round + "/" + this._mapInfo.GetCardRoomGameNumber();
             if (state == MAP_STATUS.MAP_STATE_DEAL) {
-                this._viewUI.view_fapai.visible = true;
-                this._viewUI.view_fapai.ani1.play(0, true);
+                this._viewUI.view_paixie.ani2.play(0, true);
             } else {
-                this._viewUI.view_fapai.visible = false;
-                this._viewUI.view_fapai.ani1.stop();
+                this._viewUI.view_paixie.ani2.gotoAndStop(0);
             }
             this._isPlaying = state >= MAP_STATUS.MAP_STATE_SHUFFLE && state < MAP_STATUS.MAP_STATE_END;
             this._viewUI.view_paixie.cards.visible = state >= MAP_STATUS.MAP_STATE_SHUFFLE && state < MAP_STATUS.MAP_STATE_END;

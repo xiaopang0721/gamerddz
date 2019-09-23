@@ -23,12 +23,13 @@ module gamerddz.page {
 
 
 			this["__needLoadAsset"] = [
-				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
 				Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
 				Path_game_rddz.atlas_game_ui + "doudizhu/effect/baodan.atlas",
