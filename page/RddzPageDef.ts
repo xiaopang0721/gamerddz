@@ -189,6 +189,7 @@ module gamerddz.page {
 					Path_game_rddz.music_ddz + "woman_chupai2.mp3",
 				])
 			}
+			this["__roomcard"] = Web_operation_fields.GAME_ROOM_CONFIG_CARD_ROOM;
 		}
 	}
 }
