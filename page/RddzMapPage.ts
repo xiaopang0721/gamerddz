@@ -2,7 +2,7 @@
 * 斗地主
 */
 module gamerddz.page {
-    const enum MAP_STATUS {
+    export const enum MAP_STATUS {
         MAP_STATE_NONE = 0,			//初始化
         MAP_STATE_CARDROOM_CREATED = 1,  	//房间创建后
         MAP_STATE_CARDROOM_WAIT = 2,		//房卡等人中
@@ -21,10 +21,17 @@ module gamerddz.page {
     const MAX_COUNT = 3;  //最大人数
     export class RddzMapPage extends game.gui.base.Page {
         private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhuUI;
-        private _feijiView: ui.nqp.game_ui.doudizhu.component.feijiUI;
-        private _wangZhaWiew: ui.nqp.game_ui.doudizhu.component.HuoJianUI;
-        private _shunZiView: ui.nqp.game_ui.doudizhu.component.shunziUI;
-        private _bombView: ui.nqp.game_ui.doudizhu.component.bombUI;
+        private _feijiView: ui.nqp.game_ui.doudizhu.component.Effect_feijiUI;
+        private _wangZhaWiew: ui.nqp.game_ui.doudizhu.component.Effect_wzUI;
+        private _bombView: ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI;
+        private _ksyxView: ui.nqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI;  //开始游戏
+        private _nmsbView: ui.nqp.game_ui.doudizhu.component.Effect_rmsbUI;  //农民失败
+        private _nmslView: ui.nqp.game_ui.doudizhu.component.Effect_rmslUI;  //农名胜利
+        private _dzsbView: ui.nqp.game_ui.doudizhu.component.Effect_dzsbUI;  //地主失败
+        private _dzslView: ui.nqp.game_ui.doudizhu.component.Effect_dzslUI;  //地主胜利
+        private _fctView: ui.nqp.game_ui.doudizhu.component.Effect_fctUI;  //反春天
+        private _ctView: ui.nqp.game_ui.doudizhu.component.Effect_chuntianUI;  //春天
+
         private _mapInfo: RddzMapInfo;
         private _ddzMgr: RddzMgr;
         private _ddzStory: any;
@@ -32,16 +39,18 @@ module gamerddz.page {
         private _curStatus: number; //当前地图状态
         private _countDown: number; //倒计时结束时间
         private _mainIdx: number;   //主玩家座位号
-        private _clipList: Array<DdzClip> = [];//飘字
+        private _clipList: Array<{}> = [];//飘字
         private _winerPos: any = [];  //赢家
         private _settleLoseInfo: any = [];  //结算信息，闲家输
         private _moneyImg: any = [];    //飘金币里的金币
         private _isPlaying: boolean = false;    //是否进行中
         private _pointTemp: any = [];   //每局积分
-        private _imgTimePos: any = [[250, 490], [1040, 230], [250, 230]];  //时钟位置
+        private _imgTimePos: any = [[640, 430], [1040, 230], [250, 230]];  //时钟位置
         private _chooseCards: any = []; //选中的牌
         private _surplusCards: any = [17, 17, 17];    //各个座位剩余牌数
         private _headPos: any = [[33, 553], [1160, 197], [27, 197]]; //各个头像坐标
+        private _lightPointTemp: Array<any> = [[-10, 1], [194, 1], [18, 1]];  //指示灯位置
+
         private _moneyChange: number;   //主玩家金币变化
         private _qiangCount: number = 0;    //抢关次数
         private _isPlayXiPai: boolean = false;  //是否播放洗牌
@@ -69,22 +78,38 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/baodan.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/chuntian.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "ksyx.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/feiji.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/huojian.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/shunzi.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/boom.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/huojian.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/shunzi.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/cxfp.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsb.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsl.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/fanchun.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/liandui.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/px.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/qipai.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsb.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsl.atlas",
+				Path_game_rddz.atlas_game_ui + "doudizhu/effect/zhadan.atlas",
             ];
         }
 
         // 页面初始化函数
         protected init(): void {
             this._viewUI = this.createView('game_ui.doudizhu.DouDiZhuUI');
-            this._feijiView = new ui.nqp.game_ui.doudizhu.component.feijiUI();
-            this._wangZhaWiew = new ui.nqp.game_ui.doudizhu.component.HuoJianUI();
-            this._shunZiView = new ui.nqp.game_ui.doudizhu.component.shunziUI();
-            this._bombView = new ui.nqp.game_ui.doudizhu.component.bombUI();
+            this._feijiView = new ui.nqp.game_ui.doudizhu.component.Effect_feijiUI();
+            this._wangZhaWiew = new ui.nqp.game_ui.doudizhu.component.Effect_wzUI();
+            this._bombView = new ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI();
+            this._ksyxView = new ui.nqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI();  //开始游戏
+            this._nmsbView = new ui.nqp.game_ui.doudizhu.component.Effect_rmsbUI();  //农民失败
+            this._nmslView = new ui.nqp.game_ui.doudizhu.component.Effect_rmslUI();  //农民胜利
+            this._dzsbView = new ui.nqp.game_ui.doudizhu.component.Effect_dzsbUI();  //地主失败
+            this._dzslView = new ui.nqp.game_ui.doudizhu.component.Effect_dzslUI();  //地主胜利
+            this._fctView = new ui.nqp.game_ui.doudizhu.component.Effect_fctUI();  //反春天
+            this._ctView = new ui.nqp.game_ui.doudizhu.component.Effect_chuntianUI();  //反春天
             this.addChild(this._viewUI);
             this._pageHandle = PageHandle.Get("DdzMapPage");//额外界面控制器
             if (!this._ddzMgr) {
@@ -123,6 +148,7 @@ module gamerddz.page {
             this._viewUI.view_xipai.ani_xipai.on(LEvent.COMPLETE, this, this.onWashCardOver);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_OPRATE_SUCESS, this, this.onSucessHandler);
 
+
             this._viewUI.btn_menu.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_back.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_cardtype.on(LEvent.CLICK, this, this.onBtnClickWithTween);
@@ -135,6 +161,7 @@ module gamerddz.page {
             this._viewUI.btn_buqiang.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_tishi.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_tuoguan.on(LEvent.CLICK, this, this.onBtnClickWithTween);
+            this._viewUI.btn_qxtg.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_qifu.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._game.qifuMgr.on(QiFuMgr.QIFU_FLY, this, this.qifuFly);
 
@@ -164,10 +191,6 @@ module gamerddz.page {
             this._isPlayXiPai = true;
         }
 
-        get isCardRoomType() {
-            return this._ddzStory instanceof gamecomponent.story.StoryRoomCardBase;
-        }
-
         //打开时要处理的东西
         private updateViewUI(): void {
             this._viewUI.img_menu.visible = false;
@@ -175,24 +198,30 @@ module gamerddz.page {
             this._viewUI.view_cardroom.visible = false;
             this._viewUI.box_qiang.visible = false;
             this._viewUI.btn_tuoguan.visible = false;
-            this._viewUI.view_chuntian.visible = false;
-            this._viewUI.text_round.visible = false;
+            this._viewUI.img_round.visible = false;
             this._viewUI.txt_roomno.visible = false;
             this._viewUI.text_cardroomid.visible = false;
             this._viewUI.img_tishi.visible = false;
             this._viewUI.img_pass.visible = false;
             this._viewUI.view_time.visible = false;
             this._viewUI.img_chupai.visible = false;
-            this._viewUI.view_chuntian.ani1.stop();
             this._viewUI.view_paixie.ani2.gotoAndStop(0);
             this._viewUI.view_xipai.visible = false;
             this._viewUI.view_xipai.ani_xipai.stop();
             this._viewUI.view_paixie.cards.visible = false;
             this._viewUI.view_paixie.ani_chupai.stop();
+            this._viewUI.view_dzjb.visible = false;
+            this._viewUI.view_cxfp.visible = false;
+            this._viewUI.view_bet.visible = false;
+            this._viewUI.box_tg.visible = false;
+            this._viewUI.btn_qxtg.visible = false;
+            this._viewUI.tg_info.visible = false;
+            this._viewUI.text_qz_info.visible = false;
             for (let i = 0; i < MAX_COUNT; i++) {
                 this._viewUI["view_player" + i].visible = false;
                 this._viewUI["view_player" + i].img_dizhu.visible = false;
                 this._viewUI["view_player" + i].img_tuoguan.visible = false;
+                this._viewUI["view_player" + i].box_money.visible = false;
                 this._viewUI["img_tishi" + i].visible = false;
                 this._viewUI["img_type" + i].visible = false;
                 if (i > 0) {
@@ -212,23 +241,15 @@ module gamerddz.page {
                     break;
                 case this._viewUI.btn_back:
                     let mapinfo: RddzMapInfo = this._game.sceneObjectMgr.mapInfo as RddzMapInfo;
-                    if (this.isCardRoomType) {
-                        if (!this.canEndCardGame()) return;
-                        if (this._ddzStory.isCardRoomMaster()) {
-                            this.masterDismissCardGame();
-                            return;
-                        }
-                    } else {
-                        if (mapinfo && mapinfo.GetPlayState() == 1) {
-                            this._game.showTips("游戏尚未结束，请先打完这局哦~");
-                            return;
-                        }
+                    if (this._ddzStory.isCardRoomMaster()) {
+                        this.masterDismissCardGame();
+                        return;
                     }
                     this.resetData();
                     this.clearMapInfoListen();
                     this._ddzMgr.clear();
                     this._ddzStory.clear();
-                    this.clearClip();
+                    // this.clearClip();
                     this.clearMoneyImg();
                     this._game.sceneObjectMgr.leaveStory(true);
                     break;
@@ -253,7 +274,7 @@ module gamerddz.page {
                     break;
                 case this._viewUI.view_cardroom.btn_invite://房卡邀请
                     // 微信邀请玩家参与房卡游戏
-                    if (this.isCardRoomType && this._mapInfo.GetCardRoomId()) {
+                    if (this._mapInfo.GetCardRoomId()) {
                         this._game.network.call_get_roomcard_share(RddzPageDef.GAME_NAME);
                     }
                     break;
@@ -294,6 +315,7 @@ module gamerddz.page {
                     this.ClickBtnTiShi();
                     break;
                 case this._viewUI.btn_tuoguan:
+                case this._viewUI.btn_qxtg:
                     this._game.network.call_ddz_trusteeship();
                     break;
                 case this._viewUI.btn_qifu://祈福
@@ -357,11 +379,15 @@ module gamerddz.page {
                         this._viewUI["view_player" + index].img_tuoguan.visible = true;
                         if (posIdx == idx) {
                             this._viewUI.btn_tuoguan.skin = Path_game_rddz.ui_ddz + "btn_tg1.png";
+                            this._viewUI.box_tg.visible = true;
+                            this._viewUI.btn_qxtg.visible = true;
                         }
                     } else if (unit.GetIdentity() == 0) {
                         this._viewUI["view_player" + index].img_tuoguan.visible = false;
                         if (posIdx == idx) {
                             this._viewUI.btn_tuoguan.skin = Path_game_rddz.ui_ddz + "btn_tg0.png";
+                            this._viewUI.box_tg.visible = false;
+                            this._viewUI.btn_qxtg.visible = false;
                         }
                     }
                     //头像框
@@ -418,6 +444,8 @@ module gamerddz.page {
         }
 
         //地图监听
+        //用于只需要初始化一遍的数据
+        private _isInit: boolean = false;
         private onUpdateMapInfo(): void {
             let mapInfo = this._game.sceneObjectMgr.mapInfo;
             this._mapInfo = mapInfo as RddzMapInfo;
@@ -430,9 +458,7 @@ module gamerddz.page {
                     this.onUpdateMapState();
                     this.updateCountDown();
                 }
-                if (this.isCardRoomType) {
-                    this.updateCardRoomDisplayInfo();
-                }
+                this.updateCardRoomDisplayInfo();
                 this.onUpdateUnit();
             }
         }
@@ -489,27 +515,25 @@ module gamerddz.page {
 
         // 房卡按纽及状态
         private setCardRoomBtnVisible() {
-            this._viewUI.view_cardroom.visible = this.isCardRoomType;
+            this._viewUI.view_cardroom.visible = true;
             if (!this._ddzMgr.isReLogin) {
                 this._viewUI.text_cardroomid.visible = true;
             }
             this._viewUI.text_cardroomid.text = "房间号：" + this._mapInfo.GetCardRoomId();
-            if (this.isCardRoomType) {
-                if (!this._ddzMgr.isReLogin) {
-                    this._viewUI.view_cardroom.btn_invite.visible = true;
-                    this._viewUI.view_cardroom.btn_invite.x = this._ddzStory.isCardRoomMaster() ? 420 : this._viewUI.view_cardroom.btn_start.x;
-                    // this._viewUI.view_cardroom.btn_dismiss.visible = this._ddzStory.isCardRoomMaster();
-                    this._viewUI.view_cardroom.btn_start.visible = this._ddzStory.isCardRoomMaster();
-                } else {
-                    this._viewUI.view_cardroom.visible = false;
-                }
+            if (!this._ddzMgr.isReLogin) {
+                this._viewUI.view_cardroom.btn_invite.visible = true;
+                this._viewUI.view_cardroom.btn_invite.x = this._ddzStory.isCardRoomMaster() ? 420 : this._viewUI.view_cardroom.btn_start.x;
+                // this._viewUI.view_cardroom.btn_dismiss.visible = this._ddzStory.isCardRoomMaster();
+                this._viewUI.view_cardroom.btn_start.visible = this._ddzStory.isCardRoomMaster();
+            } else {
+                this._viewUI.view_cardroom.visible = false;
             }
             this._ddzMgr.isReLogin = false;
         }
 
         // 房卡事件和初始界面布局
         private setCardRoomBtnEvent(isOn) {
-            if (this.isCardRoomType && isOn) {
+            if (isOn) {
                 this._viewUI.view_cardroom.btn_invite.on(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.view_cardroom.btn_start.on(LEvent.CLICK, this, this.onBtnClickWithTween);
                 // this._viewUI.view_cardroom.btn_dismiss.on(LEvent.CLICK, this, this.onBtnClickWithTween);
@@ -553,7 +577,7 @@ module gamerddz.page {
             let state = this._mapInfo.GetMapState();
             this._viewUI.txt_roomno.text = "牌局号：" + this._mapInfo.GetGameNo();
             let round = this._mapInfo.GetRound() + 1;
-            this._viewUI.text_round.text = "局数：" + round + "/" + this._mapInfo.GetCardRoomGameNumber();
+            this._viewUI.text_round.text = "第" + round + "/" + this._mapInfo.GetCardRoomGameNumber() + "局";
             if (state == MAP_STATUS.MAP_STATE_DEAL) {
                 this._viewUI.view_paixie.ani2.play(0, true);
             } else {
@@ -561,17 +585,24 @@ module gamerddz.page {
             }
             this._isPlaying = state >= MAP_STATUS.MAP_STATE_SHUFFLE && state < MAP_STATUS.MAP_STATE_END;
             this._viewUI.view_paixie.cards.visible = state >= MAP_STATUS.MAP_STATE_SHUFFLE && state < MAP_STATUS.MAP_STATE_END;
-            if (this.isCardRoomType) {
-                if (this._isPlaying) {  //隐藏下按钮
-                    this._viewUI.view_cardroom.visible = false;
-                    this._viewUI.text_round.visible = true;
-                    this._viewUI.txt_roomno.visible = true;
-                    this._viewUI.text_cardroomid.visible = false;
-                }
+            if (this._isPlaying) {  //隐藏下按钮
+                this._viewUI.view_cardroom.visible = false;
+                this._viewUI.img_round.visible = true;
+                this._viewUI.txt_roomno.visible = true;
+                this._viewUI.text_cardroomid.visible = false;
             }
             if (state == MAP_STATUS.MAP_STATE_SHUFFLE) {
-                this._pageHandle.pushClose({ id: RddzPageDef.PAGE_DDZ_CARDROOM_SETTLE, parent: this._game.uiRoot.HUD });
-                this.playDealAni();
+                if (this._ksyxView.ani1.isPlaying) {
+                    this._ksyxView.ani1.gotoAndStop(1);
+                    this._ksyxView.ani1.play(1, false);
+                }
+                //游戏开始特效
+                this._viewUI.box_view.addChild(this._ksyxView);
+                this._ksyxView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._ksyxView, () => {
+                    this._pageHandle.pushClose({ id: RddzPageDef.PAGE_DDZ_CARDROOM_SETTLE, parent: this._game.uiRoot.HUD });
+                    this.playDealAni();
+                }]);
+                this._ksyxView.ani1.play(1, false);
             }
             if (state >= MAP_STATUS.MAP_STATE_DEAL_END) {
                 if (!this._ddzMgr.isShowCards) {
@@ -612,16 +643,20 @@ module gamerddz.page {
                 this._viewUI["img_tishi" + posIdx].visible = false;
                 this._viewUI["img_type" + posIdx].visible = false;
                 //如果有炸弹现结的飘字
-                if (this._clipList.length > 0) {
-                    Laya.timer.once(2000, this, this.clearClip);
-                }
+                // if (this._clipList.length > 0) {
+                //     Laya.timer.once(2000, this, this.clearClip);
+                // }
+                //轮到谁的指示灯
+                this._viewUI.img_point.visible = true;
+                this._viewUI.img_point.rotation = this._lightPointTemp[posIdx][0];
+                this._viewUI.img_point.scaleX = this._lightPointTemp[posIdx][1];
             } else {
                 this._viewUI.box_btn.visible = false;
                 this._viewUI.btn_tuoguan.visible = false;
             }
             if (state == MAP_STATUS.MAP_STATE_WAIT) {
                 this.openSettlePage();
-                this.clearClip();
+                // this.clearClip();
                 this.updateViewUI();
                 this.onUpdateUnit();
                 this.resetData();
@@ -630,6 +665,7 @@ module gamerddz.page {
                 this._ddzMgr.clear();
             }
             if (state == MAP_STATUS.MAP_STATE_SETTLE) {
+                //飘钱
                 this.addBankerWinEff();
                 for (let i = 1; i < MAX_COUNT; i++) {
                     this._viewUI["view_baodan" + i].visible = false;
@@ -637,17 +673,15 @@ module gamerddz.page {
                 }
             }
             if (state == MAP_STATUS.MAP_STATE_END) {
-                if (this.isCardRoomType) {
-                    this.openSettlePage();
-                    this.clearClip();
-                    this.updateViewUI();
-                    this.onUpdateUnit();
-                    this.resetData();
-                    this.clearMoneyImg();
-                    this._ddzMgr.resetData();
-                    this._ddzMgr.clear();
-                    this._battleIndex = -1;
-                }
+                this.openSettlePage();
+                // this.clearClip();
+                this.updateViewUI();
+                this.onUpdateUnit();
+                this.resetData();
+                this.clearMoneyImg();
+                this._ddzMgr.resetData();
+                this._ddzMgr.clear();
+                this._battleIndex = -1;
             }
             this._pageHandle.updatePageHandle();
             this._pageHandle.reset();
@@ -737,11 +771,21 @@ module gamerddz.page {
             }
         }
 
+        //场景上的动画播放完之后
+        private onUIAniOver(view: any, callBack: Function): any {
+            if (view) {
+                view.ani1.off(LEvent.COMPLETE, this, this.onUIAniOver);
+                view.visible = false;
+            }
+            callBack && callBack();
+        }
+
         //各种特殊牌效果播完
-        private onPlayAniOver(view: any): void {
+        private onPlayAniOver(view: any, callBack?: Function): void {
             view.ani1.off(LEvent.COMPLETE, this, this.onPlayAniOver);
             view.ani1.gotoAndStop(1);
             this._viewUI.box_view.removeChild(view);
+            callBack && callBack();
         }
 
         //战斗日志
@@ -808,7 +852,7 @@ module gamerddz.page {
                                                 this._wangZhaWiew.ani1.play(1, false);
                                             } else {
                                                 this._viewUI.box_view.addChild(this._wangZhaWiew);
-                                                this._wangZhaWiew.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._wangZhaWiew]);
+                                                this._wangZhaWiew.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._wangZhaWiew, this.showDZJB]);
                                                 this._wangZhaWiew.ani1.play(1, false);
                                             }
                                         } else {
@@ -817,23 +861,16 @@ module gamerddz.page {
                                                 this._bombView.ani1.play(1, false);
                                             } else {
                                                 this._viewUI.box_view.addChild(this._bombView);
-                                                this._bombView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._bombView]);
+                                                this._bombView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._bombView, this.showDZJB]);
                                                 this._bombView.ani1.play(1, false);
                                             }
-                                        }
-                                    } else if (type == 6) { //顺子特效
-                                        if (this._shunZiView.ani1.isPlaying) {
-                                            this._shunZiView.ani1.gotoAndStop(1);
-                                            this._shunZiView.ani1.play(1, false);
-                                        } else {
-                                            this._viewUI.box_view.addChild(this._shunZiView);
-                                            this._shunZiView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._shunZiView]);
-                                            this._shunZiView.ani1.play(1, false);
                                         }
                                     }
                                 }
                                 this._viewUI["img_type" + posIdx].visible = true;
-                                this._viewUI["img_type" + posIdx].skin = Path_game_rddz.ui_ddz + "px_" + type + ".png";
+                                this._viewUI["img_type" + posIdx].img_px1.skin = Path_game_rddz.ui_ddz + "effect/px/px_" + type + ".png";
+                                this._viewUI["img_type" + posIdx].img_px2.skin = Path_game_rddz.ui_ddz + "effect/px/pxh_" + type + ".png";
+                                this._viewUI["img_type" + posIdx].ani1.play(0, false);
                             } else {
                                 this._viewUI["img_type" + posIdx].visible = false;
                             }
@@ -871,6 +908,9 @@ module gamerddz.page {
                             let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoPass;
                             let idx = info.SeatIndex;
                             this._viewUI["img_tishi" + posIdx].visible = true;
+                            this._viewUI["img_tishi" + posIdx].img_info.skin = Path_game_rddz.ui_ddz + "qipai/tu_qpybq.png";
+                            this._viewUI["img_tishi" + posIdx].ani1.play(0, false);
+                            this._viewUI["img_tishi" + posIdx].ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI["img_tishi" + posIdx], () => { }]);
                             this._viewUI["img_type" + posIdx].visible = false;
                             this._ddzMgr.clearPlayingCard(idx);
                             if (idx == mainIdx) {
@@ -893,16 +933,29 @@ module gamerddz.page {
                         if (this._battleIndex < i) {
                             this._battleIndex = i;
                             this._viewUI.view_paixie.cards.visible = false;
+                            //重新发牌
+                            this._viewUI.view_cxfp.ani1.play(0, false);
+                            this._viewUI.view_cxfp.ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI.view_cxfp, () => { }]);
                         }
                         break;
                     }
-                    case 6: {   //抢地主
+                    case 6: {   //抢地主开始
                         if (this._battleIndex < i) {
                             this._battleIndex = i;
                             let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoJiaoDiZhu;
                             let idx = info.SeatIndex;
+                            let OptType = info.OptType;
+                            this._viewUI.text_qz_info.visible = true;
                             if (idx == mainIdx) {
                                 this._viewUI.box_qiang.visible = false;
+                                this._viewUI.text_qz_info.visible = false;
+                            }
+                            this._viewUI["img_tishi" + posIdx].visible = true;
+                            this._viewUI["img_tishi" + posIdx].img_info.skin = Path_game_rddz.ui_ddz + (OptType ? "qipai/tu_qpqdz.png" : "qipai/tu_qpbq.png");
+                            this._viewUI["img_tishi" + posIdx].ani1.play(0, false);
+                            this._viewUI["img_tishi" + posIdx].ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI["img_tishi" + posIdx], () => { }]);
+                            if (OptType) {
+                                this.showDZJB();
                             }
                             if (!this._ddzMgr.isReLogin) {
                                 let unit = this._game.sceneObjectMgr.getUnitByIdx(idx);
@@ -970,13 +1023,28 @@ module gamerddz.page {
                         }
                         break;
                     }
-                    case 12: {   //春天
+                    case 12: {   //春天跟反春天
                         if (this._battleIndex < i) {
                             this._battleIndex = i;
                             let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoBanker;
                             this._totalMul = this._totalMul * 2;
-                            this._viewUI.view_chuntian.visible = true;
-                            this._viewUI.view_chuntian.ani1.play(1, false);
+                            let chunTianType = info.Round;
+                            let viewEffect = this._ctView
+                            if (chunTianType == 1) {
+                                //春天
+                                viewEffect = this._ctView;
+                            } else if (chunTianType == 2) {
+                                //反春天
+                                viewEffect = this._fctView;
+                            }
+                            if (viewEffect.ani1.isPlaying) {
+                                viewEffect.ani1.gotoAndStop(1);
+                                viewEffect.ani1.play(1, false);
+                            } else {
+                                this._viewUI.box_view.addChild(viewEffect);
+                                viewEffect.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [viewEffect, this.showDZJB]);
+                                viewEffect.ani1.play(1, false);
+                            }
                             if (!this._ddzMgr.isReLogin) {
                                 let unit = this._game.sceneObjectMgr.getUnitByIdx(info.SeatIndex);
                                 if (unit) {
@@ -1035,10 +1103,15 @@ module gamerddz.page {
             }
         }
 
+        //底住加倍        
+        private showDZJB() {
+            this._viewUI.view_dzjb.ani1.play(0, false);
+            this._viewUI.view_dzjb.ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI.view_dzjb, () => { }]);
+        }
+
         //重连之后，战斗日志从哪开始刷
         private resetBattleIdx(): void {
             //不是房卡模式，就不用算
-            if (!this.isCardRoomType) return;
             let battleInfoMgr = this._mapInfo.battleInfoMgr;
             for (let i = 0; i < battleInfoMgr.info.length; i++) {
                 let battleInfo = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoBase;
@@ -1358,17 +1431,49 @@ module gamerddz.page {
                     this.settleSound();
                 }
             }
-            if (this._winerPos.length == 1) {   //抢关的人赢了
-                for (let i: number = 0; i < this._settleLoseInfo.length; i++) {
-                    let unitPos = this._settleLoseInfo[i];
-                    this.addMoneyFly(unitPos, this._winerPos[0]);
+            let callBack: Function;
+            if (this._winerPos.length == 1) {   //抢地主的人赢了
+                callBack = () => {
+                    for (let i: number = 0; i < this._settleLoseInfo.length; i++) {
+                        let unitPos = this._settleLoseInfo[i];
+                        this.addMoneyFly(unitPos, this._winerPos[0]);
+                    }
                 }
-            } else if (this._settleLoseInfo.length == 1) {  //抢关的人输了
-                for (let i: number = 0; i < this._winerPos.length; i++) {
-                    let unitPos = this._winerPos[i];
-                    this.addMoneyFly(this._settleLoseInfo[0], unitPos);
+                if (this._winerPos[0] == 0) {
+                    //自己是地主 播放地主胜利
+                    this.settleView(this._dzslView, callBack);
+                } else {
+                    //自己是农民 播放农民失败
+                    this.settleView(this._nmsbView, callBack);
+                }
+
+            } else if (this._settleLoseInfo.length == 1) {  //抢地主的人输了
+                callBack = () => {
+                    for (let i: number = 0; i < this._winerPos.length; i++) {
+                        let unitPos = this._winerPos[i];
+                        this.addMoneyFly(this._settleLoseInfo[0], unitPos);
+                    }
+                }
+                if (this._settleLoseInfo[0] == 0) {
+                    //自己是地主 播放地主失败
+                    this.settleView(this._dzsbView, callBack);
+                } else {
+                    //自己是农民 播放农民胜利
+                    this.settleView(this._nmslView, callBack);
                 }
             }
+        }
+
+        //结算特效
+        private settleView(viewEffect: any, callBack: Function): void {
+            if (viewEffect.ani1.isPlaying) {
+                viewEffect.ani1.gotoAndStop(1);
+                viewEffect.ani1.play(1, false);
+            }
+            //游戏开始特效
+            this._viewUI.box_view.addChild(viewEffect);
+            viewEffect.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [viewEffect, callBack]);
+            viewEffect.ani1.play(1, false);
         }
 
         //结算音效
@@ -1435,30 +1540,46 @@ module gamerddz.page {
             if (!mainUnit) return;
             let idx = mainUnit.GetIndex();
             if (!idx) return;
-            let valueClip = value >= 0 ? new DdzClip(DdzClip.ADD_MONEY_FONT) : new DdzClip(DdzClip.SUB_MONEY_FONT);
-            let preSkin = value >= 0 ? PathGameTongyong.ui_tongyong_general + "tu_jia.png" : PathGameTongyong.ui_tongyong_general + "tu_jian.png";
-            valueClip.scale(0.8, 0.8);
-            valueClip.anchorX = 0.5;
+            let index = (pos - idx + MAX_COUNT) % MAX_COUNT;
+            let viewPlayer: ui.nqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
+            let valueClip: DdzClip;
+            if (this._clipList.length > 0 && !viewPlayer.clip_num.visible) {
+                //初始化过了艺术字
+                for (let i = 0; i < this._clipList.length; i++) {
+                    let curObj: any = this._clipList[0];
+                    if (curObj && curObj.pos == index) {
+                        if (value >= 0) valueClip = curObj.addMoneyClip;
+                        else valueClip = curObj.subMoneyClip;
+                    }
+                }
+            }
+            if (!valueClip) {
+                let obj = {
+                    pos: index,
+                    addMoneyClip: new DdzClip(DdzClip.ADD_MONEY_FONT),
+                    subMoneyClip: new DdzClip(DdzClip.SUB_MONEY_FONT),
+                }
+                valueClip = value >= 0 ? obj.addMoneyClip : obj.subMoneyClip;
+                viewPlayer.clip_num.visible = false;
+                viewPlayer.clip_num.parent.addChild(valueClip);
+            }
+            let preSkin = value >= 0 ? PathGameTongyong.ui_tongyong_general + "tu_+.png" : PathGameTongyong.ui_tongyong_general + "tu_-.png";   //符号
+            let imgBgSkin = value >= 0 ? PathGameTongyong.ui_tongyong_general + "tu_jiafd.png" : PathGameTongyong.ui_tongyong_general + "tu_jianfd.png";   //背景图
             let moneyStr = EnumToString.getPointBackNum(Math.abs(value), 2);
             valueClip.setText(moneyStr + "", true, false, preSkin);
-            let index = (pos - idx + MAX_COUNT) % MAX_COUNT;
-            let posX = this._headPos[index][0] + 50;
-            let posY = this._headPos[index][1] + 50;
-            let deep = this._viewUI.img_menu.parent.getChildIndex(this._viewUI.img_menu);
-            if (!valueClip.parent) this._viewUI.box_view.addChildAt(valueClip, deep);
-            valueClip.pos(posX, posY);
-            this._clipList.push(valueClip);
-            Laya.Tween.clearAll(valueClip);
-            Laya.Tween.to(valueClip, { y: posY - 120 }, 1000);
+            viewPlayer.box_money.visible = true;
+            viewPlayer.img_bg.skin = imgBgSkin;
+            viewPlayer.ani1.play(0, false);
+            viewPlayer.ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [viewPlayer]);
         }
 
         //清理飘钱动画
         private clearClip(): void {
             if (this._clipList && this._clipList.length) {
                 for (let i: number = 0; i < this._clipList.length; i++) {
-                    let clip = this._clipList[i];
-                    clip.removeSelf();
-                    clip.destroy();
+                    let clip:any = this._clipList[i];
+                    clip.addMoneyClip.removeSelf();
+                    clip.subMoneyClip.removeSelf();
                     clip = null;
                 }
             }
@@ -1505,7 +1626,7 @@ module gamerddz.page {
                 switch (msg.reason) {
                     case Operation_Fields.OPRATE_TELEPORT_MAP_CREATE_ROOM_SUCCESS://在地图中重新创建房间成功
                         this.resetData();
-                        this.clearClip();
+                        // this.clearClip();
                         this.clearMoneyImg();
                         this._battleIndex = -1;
                         this._game.sceneObjectMgr.clearOfflineObject();
@@ -1554,10 +1675,6 @@ module gamerddz.page {
 
         //重置数据
         private resetData(): void {
-            //不是房卡模式，才会去设置
-            if (!this.isCardRoomType) {
-                this._battleIndex = -1;
-            }
             this._ddzMgr.isReLogin = false;
             this._winerPos = [];
             this._settleLoseInfo = [];
@@ -1604,9 +1721,9 @@ module gamerddz.page {
             this._bombView.removeSelf();
             this._bombView.destroy();
             this._bombView = null;
-            this._shunZiView.removeSelf();
-            this._shunZiView.destroy();
-            this._shunZiView = null;
+            this._ksyxView.removeSelf();
+            this._ksyxView.destroy();
+            this._ksyxView = null;
         }
 
         public close(): void {
@@ -1623,7 +1740,8 @@ module gamerddz.page {
                 this._viewUI.btn_buqiang.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_tishi.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_tuoguan.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.btn_qifu.off(LEvent.CLICK, this, this.onBtnClickWithTween);                
+                this._viewUI.btn_qxtg.off(LEvent.CLICK, this, this.onBtnClickWithTween);
+                this._viewUI.btn_qifu.off(LEvent.CLICK, this, this.onBtnClickWithTween);
 
                 this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_STATUS_CHECK, this, this.onUpdateMapState);
                 this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_BATTLE_CHECK, this, this.updateBattledInfo);
@@ -1650,6 +1768,7 @@ module gamerddz.page {
                 this._game.stopAllSound();
                 this.setCardRoomBtnEvent(false);
                 this.clearCardsView();
+                this.clearClip();
             }
 
             super.close();

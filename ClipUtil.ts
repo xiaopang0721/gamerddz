@@ -24,8 +24,8 @@ module gamerddz {
 
             //加钱飘字
             this.ADD_MONEY_FONT = {
-                source: PathGameTongyong.atlas_game_ui_tongyong+ "general.atlas",
-                url: PathGameTongyong.ui_tongyong_general + 'clip_num1.png',
+                source: PathGameTongyong.atlas_game_ui_tongyong+ "fk.atlas",
+                url: PathGameTongyong.ui_tongyong_fk + 'clip_+123.png',
                 clipWidth: 25,
                 clipHeight: 32,
                 clipX: 11,
@@ -34,8 +34,8 @@ module gamerddz {
 
             //扣钱飘字
             this.SUB_MONEY_FONT = {
-                source: PathGameTongyong.atlas_game_ui_tongyong+ "general.atlas",
-                url: PathGameTongyong.ui_tongyong_general + 'clip_num.png',
+                source: PathGameTongyong.atlas_game_ui_tongyong+ "fk.atlas",
+                url: PathGameTongyong.ui_tongyong_general + 'clip_-123.png',
                 clipWidth: 25,
                 clipHeight: 32,
                 clipX: 11,

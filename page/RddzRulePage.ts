@@ -39,12 +39,19 @@ module gamerddz.page {
 			else {
 				this._viewUI.btn_tab.selectedIndex = TYPE_INDEX.TYPE_WANFA;
 			}
+			this._viewUI.panel_type.vScrollBarSkin = "";
+			this._viewUI.panel_type.vScrollBar.autoHide = true;
+			this._viewUI.panel_type.vScrollBar.elasticDistance = 100;
+
+			this._viewUI.panel_daxiao.vScrollBarSkin = "";
+			this._viewUI.panel_daxiao.vScrollBar.autoHide = true;
+			this._viewUI.panel_daxiao.vScrollBar.elasticDistance = 100;
 		}
 
 		private selectHandler(index: number): void {
 			this._viewUI.img_wanfa.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_WANFA;
-			this._viewUI.img_type.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_TYPE;
-			this._viewUI.img_daxiao.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_DAXIAO;
+			this._viewUI.panel_type.visible = this._viewUI.img_type.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_TYPE;
+			this._viewUI.panel_daxiao.visible = this._viewUI.img_daxiao.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_DAXIAO;
 			this._viewUI.img_beishu.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_BEISHU;
 			this._viewUI.img_point.visible = this._viewUI.btn_tab.selectedIndex == TYPE_INDEX.TYPE_POINT;
 		}
