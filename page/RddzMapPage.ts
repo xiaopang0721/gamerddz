@@ -488,29 +488,17 @@ module gamerddz.page {
                 if (mPlayer) {
                     money = mPlayer.playerInfo.money;
                     this._viewUI.view_player0.txt_name.text = getMainPlayerName(mPlayer.playerInfo.nickname);
-                    this._viewUI.view_player0.img_head.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + mPlayer.playerInfo.headimg + ".png";
-                    this._viewUI.view_player0.img_qifu.visible = mPlayer.GetQiFuEndTime(mPlayer.playerInfo.qifu_type - 1) > this._game.sync.serverTimeBys;
-                    if (this._viewUI.view_player0.img_qifu.visible && mPlayer.playerInfo.qifu_type) {
-                        this._viewUI.view_player0.img_head.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + this._nameStrInfo[mPlayer.playerInfo.qifu_type - 1] + ".png";
-                    }
+                    this._viewUI.view_player0.img_head.skin = TongyongUtil.getHeadUrl(mPlayer.playerInfo.headimg);
+                    this._viewUI.view_player0.img_qifu.visible = TongyongUtil.getIsHaveQiFu(mPlayer, this._game.sync.serverTimeBys);
                     //头像框
-                    this._viewUI.view_player0.img_txk.visible = mPlayer.playerInfo.vip_level > 0;
-                    if (this._viewUI.view_player0.img_txk.visible) {
-                        this._viewUI.view_player0.img_txk.skin = PathGameTongyong.ui_tongyong_touxiang + "tu_v" + mPlayer.playerInfo.vip_level + ".png";
-                    }
+                    this._viewUI.view_player0.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(mPlayer.playerInfo.headKuang);
                 } else {
                     money = unitOffline.GetMoney();
                     this._viewUI.view_player0.txt_name.text = getMainPlayerName(unitOffline.GetName());
-                    this._viewUI.view_player0.img_head.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + unitOffline.GetHeadImg() + ".png";
-                    this._viewUI.view_player0.img_qifu.visible = unitOffline.GetQiFuEndTime() > this._game.sync.serverTimeBys;
-                    if (this._viewUI.view_player0.img_qifu.visible && unitOffline.GetQiFuType()) {
-                        this._viewUI.view_player0.img_head.skin = PathGameTongyong.ui_tongyong_touxiang + "head_" + this._nameStrInfo[unitOffline.GetQiFuType() - 1] + ".png";
-                    }
+                    this._viewUI.view_player0.img_head.skin = TongyongUtil.getHeadUrl(unitOffline.GetHeadImg());
+                    this._viewUI.view_player0.img_qifu.visible = TongyongUtil.getIsHaveQiFu(unitOffline, this._game.sync.serverTimeBys);
                     //头像框
-                    this._viewUI.view_player0.img_txk.visible = unitOffline.GetVipLevel() > 0;
-                    if (this._viewUI.view_player0.img_txk.visible) {
-                        this._viewUI.view_player0.img_txk.skin = PathGameTongyong.ui_tongyong_touxiang + "tu_v" + unitOffline.GetVipLevel() + ".png";
-                    }
+                    this._viewUI.view_player0.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(unitOffline.GetHeadKuangImg());
                 }
                 money = EnumToString.getPointBackNum(money, 2);
                 this._viewUI.view_player0.txt_money.text = money.toString();
@@ -1681,14 +1669,13 @@ module gamerddz.page {
             return count;
         }
 
-        private _nameStrInfo: string[] = ["xs", "px", "gsy", "gg", "cs", "tdg"];
         private _qifuTypeImgUrl: string;
         private qifuFly(dataSource: any): void {
             if (!dataSource) return;
             let dataInfo = dataSource;
             this._game.qifuMgr.showFlayAni(this._viewUI.view_player0.img_head, this._viewUI, dataSource, Handler.create(this, () => {
                 //相对应的玩家精灵做出反应
-                this._qifuTypeImgUrl = StringU.substitute(PathGameTongyong.ui_tongyong_touxiang + "f_{0}2.png", this._nameStrInfo[dataInfo.qf_id - 1]);
+                this._qifuTypeImgUrl = TongyongUtil.getQFTypeImg(dataInfo.qf_id);
                 this.onUpdateUnit(dataInfo.qifu_index);
             }));
         }
