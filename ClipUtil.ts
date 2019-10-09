@@ -26,20 +26,20 @@ module gamerddz {
             this.ADD_MONEY_FONT = {
                 source: PathGameTongyong.atlas_game_ui_tongyong+ "fk.atlas",
                 url: PathGameTongyong.ui_tongyong_fk + 'clip_+123.png',
-                clipWidth: 25,
-                clipHeight: 32,
-                clipX: 11,
-                space: -8
+                clipWidth: 33,
+                clipHeight: 51,
+                clipX: 10,
+                space: -15
             };
 
             //扣钱飘字
             this.SUB_MONEY_FONT = {
                 source: PathGameTongyong.atlas_game_ui_tongyong+ "fk.atlas",
-                url: PathGameTongyong.ui_tongyong_general + 'clip_-123.png',
-                clipWidth: 25,
-                clipHeight: 32,
-                clipX: 11,
-                space: -8
+                url: PathGameTongyong.ui_tongyong_fk + 'clip_-123.png',
+                clipWidth: 33,
+                clipHeight: 51,
+                clipX: 10,
+                space: -15
             };
 
             //斗地主倍数
