@@ -49,6 +49,7 @@ module gamerddz.page {
         private _imgTimePos: any = [[640, 430], [1040, 230], [250, 230]];  //时钟位置
         private _chooseCards: any = []; //选中的牌
         private _surplusCards: any = [17, 17, 17];    //各个座位剩余牌数
+        private _bombNums: any = [0, 0, 0]; //各个座位的炸弹数
         private _headPos: any = [[33, 553], [1160, 197], [27, 197]]; //各个头像坐标
         private _lightPointTemp: Array<any> = [[-10, 1], [194, 1], [18, 1]];  //指示灯位置
 
@@ -66,6 +67,7 @@ module gamerddz.page {
             "max_val": 0,           //出牌最大值
         };
         private _toupiaoMgr: TouPiaoMgr;//投票解散管理器
+        private _chuntianType: number = 0;
 
         constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
             super(v, onOpenFunc, onCloseFunc);
@@ -389,16 +391,12 @@ module gamerddz.page {
                     if (unit.GetIdentity() == 1) {
                         viewPlayer.img_tuoguan.visible = true;
                         if (posIdx == idx) {
-                            this._viewUI.btn_tuoguan.skin = Path_game_rddz.ui_ddz + "btn_tg1.png";
-                            this._viewUI.box_tg.visible = true;
-                            this._viewUI.btn_qxtg.visible = true;
+                            this.updateTGUI();
                         }
                     } else if (unit.GetIdentity() == 0) {
                         viewPlayer.img_tuoguan.visible = false;
                         if (posIdx == idx) {
-                            this._viewUI.btn_tuoguan.skin = Path_game_rddz.ui_ddz + "btn_tg0.png";
-                            this._viewUI.box_tg.visible = false;
-                            this._viewUI.btn_qxtg.visible = false;
+                            this.updateTGUI();
                         }
                     }
                     //头像框
@@ -426,6 +424,17 @@ module gamerddz.page {
                     }
                 }
             }
+        }
+
+        //更新主玩家托管ui
+        updateTGUI(): void {
+            let mainUnit = this._game.sceneObjectMgr.mainUnit;
+            if (!mainUnit) return;
+            let identity = mainUnit.GetIdentity();
+            this._viewUI.btn_tuoguan.skin = identity == 1 ? Path_game_rpaodekuai.ui_paodekuai + "btn_tg1.png" : Path_game_rpaodekuai.ui_paodekuai + "btn_tg0.png";
+            this._viewUI.box_tg.visible = identity == 1 ? true : false;
+            this._viewUI.btn_qxtg.visible = identity == 1 ? true : false;
+            this._viewUI.tg_info.visible = false;
         }
 
         private _diff: number = 500;
@@ -647,6 +656,7 @@ module gamerddz.page {
             }
             if (state == MAP_STATUS.MAP_STATE_PLAYING) {
                 this._viewUI.btn_tuoguan.visible = true;
+                this.updateTGUI();
                 if (betPos == mainIdx) {
                     this._viewUI.box_btn.visible = true;
                     this.CheckBtnStatus(mainIdx);
@@ -665,6 +675,9 @@ module gamerddz.page {
             } else {
                 this._viewUI.box_btn.visible = false;
                 this._viewUI.btn_tuoguan.visible = false;
+                this._viewUI.box_tg.visible = false;
+                this._viewUI.btn_qxtg.visible = false;
+                this._viewUI.tg_info.visible = false;
             }
             if (state == MAP_STATUS.MAP_STATE_WAIT) {
                 this.openSettlePage();
@@ -717,12 +730,13 @@ module gamerddz.page {
                         break;
                     }
                 }
-                let cardCount: string; //手牌数量
+                let cardCount: number; //手牌数量
+                let bombNum: number;//炸弹数
                 let posIdx = (i - this._mainIdx + MAX_COUNT) % MAX_COUNT;
                 for (let index = 0; index < this._surplusCards.length; index++) {
                     if (posIdx == index) {
-                        let count = this._surplusCards[index];
-                        cardCount = count + "张";
+                        cardCount = this._surplusCards[index];
+                        bombNum = this._bombNums[index];
                         break;
                     }
                 }
@@ -735,6 +749,8 @@ module gamerddz.page {
                         cardCount: cardCount,
                         multiple: i == this._diZhuSeat ? this._totalMul * 2 : this._totalMul,
                         isDiZhu: i == this._diZhuSeat,
+                        chuntianType: this._chuntianType,
+                        bombNum: bombNum,
                     }
                     temps.push(obj);
                 }
@@ -788,6 +804,9 @@ module gamerddz.page {
                 this._viewUI.view_time.txt_time.text = time.toString();
                 if (time == 3 && !this._viewUI.view_time.ani1.isPlaying) {
                     this._viewUI.view_time.ani1.play(1, true);
+                } else {
+                    if (time > 3 && this._viewUI.view_time.ani1.isPlaying)
+                        this._viewUI.view_time.ani1.gotoAndStop(24);
                 }
             } else {
                 this._viewUI.view_time.visible = false;
@@ -889,6 +908,7 @@ module gamerddz.page {
                                                 this._bombView.ani1.play(1, false);
                                             }
                                         }
+                                        this._bombNums[posIdx]++;
                                     }
                                 }
                                 this._viewUI["img_type" + posIdx].visible = true;
@@ -931,10 +951,7 @@ module gamerddz.page {
                             this._battleIndex = i;
                             let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoPass;
                             let idx = info.SeatIndex;
-                            this._viewUI["img_tishi" + posIdx].visible = true;
-                            this._viewUI["img_tishi" + posIdx].img_info.skin = Path_game_rddz.ui_ddz + "effect/qipai/tu_qpybq.png";
-                            this._viewUI["img_tishi" + posIdx].ani1.play(0, false);
-                            this._viewUI["img_tishi" + posIdx].ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI["img_tishi" + posIdx], () => { }]);
+                            this.showQiPaoKuang(posIdx, Path_game_rddz.ui_ddz + "effect/qipai/tu_qpybq.png")
                             this._viewUI["img_type" + posIdx].visible = false;
                             this._ddzMgr.clearPlayingCard(idx);
                             if (idx == mainIdx) {
@@ -975,10 +992,7 @@ module gamerddz.page {
                             } else {
                                 this._viewUI.text_qz_info.visible = false;
                             }
-                            this._viewUI["img_tishi" + posIdx].visible = true;
-                            this._viewUI["img_tishi" + posIdx].img_info.skin = Path_game_rddz.ui_ddz + (OptType ? "effect/qipai/tu_qpqdz.png" : "effect/qipai/tu_qpbq.png");
-                            this._viewUI["img_tishi" + posIdx].ani1.play(0, false);
-                            this._viewUI["img_tishi" + posIdx].ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI["img_tishi" + posIdx], () => { }]);
+                            this.showQiPaoKuang(posIdx, Path_game_rddz.ui_ddz + (OptType ? "effect/qipai/tu_qpqdz.png" : "effect/qipai/tu_qpbq.png"))
                             if (OptType) {
                                 this.showDZJB();
                             }
@@ -1054,7 +1068,8 @@ module gamerddz.page {
                             let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoBanker;
                             this._totalMul = this._totalMul * 2;
                             let chunTianType = info.Round;
-                            let viewEffect = this._ctView
+                            let viewEffect = this._ctView;
+                            this._chuntianType = chunTianType;
                             if (chunTianType == 1) {
                                 //春天
                                 viewEffect = this._ctView;
@@ -1145,10 +1160,17 @@ module gamerddz.page {
                             let idx = info.SeatIndex;
                             this._viewUI.text_qz_info.visible = false;
                         }
-
                     }
                 }
             }
+        }
+
+        //气泡框提示
+        showQiPaoKuang(posIdx: number, skinStr: string): void {
+            this._viewUI["img_tishi" + posIdx].visible = true;
+            this._viewUI["img_tishi" + posIdx].img_info.skin = skinStr;
+            this._viewUI["img_tishi" + posIdx].ani1.play(0, false);
+            this._viewUI["img_tishi" + posIdx].ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI["img_tishi" + posIdx], () => { }]);
         }
 
         //底住加倍        
@@ -1562,14 +1584,14 @@ module gamerddz.page {
         //倍数显示
         private showMultiple(): void {
             this._multipleClip = new DdzClip(DdzClip.DDZ_BEISHU);
-            this._multipleClip.anchorX = 0.5;
-            this._multipleClip.anchorY = 0.5;
+            // this._multipleClip.anchorX = 0.5;
+            // this._multipleClip.anchorY = 0.5;
             let preSkin = Path_game_rddz.ui_ddz + "tu_x.png";
             let postSkin = Path_game_rddz.ui_ddz + "tu_b.png";
             let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
             this._multipleClip.setText(multiple + "", true, false, preSkin, postSkin);
-            let posX = 844;
-            let posY = 110;
+            let posX = 639;
+            let posY = 75;
             this._viewUI.box_view.addChild(this._multipleClip);
             this._multipleClip.pos(posX, posY);
         }

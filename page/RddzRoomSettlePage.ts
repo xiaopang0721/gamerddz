@@ -17,14 +17,14 @@ module gamerddz.page {
 
         // 页面初始化函数
         protected init(): void {
-            this._viewUI = this.createView('game_ui.doudizhu.JieSuan_FangKaUI');
+            this._viewUI = this.createView('game_ui.paodekuai.JieSuan_FangKaUI');
             this.addChild(this._viewUI);
         }
 
         // 页面打开时执行函数
         protected onOpen(): void {
             super.onOpen();
-            this._viewUI.list_settle.itemRender = this.createChildren("game_ui.tongyong.JieSuanRender2UI", ListRecordItem);
+            this._viewUI.list_settle.itemRender = this.createChildren("game_ui.doudizhu.component.JieSuanRender2_ddzUI", ListRecordItem);
             this._viewUI.list_settle.renderHandler = new Handler(this, this.renderHandler);
             this._viewUI.list_settle.dataSource = this.dataSource[2];
             this._isGameEnd = this.dataSource[3] >= MAP_STATUS.MAP_STATE_END;
@@ -35,12 +35,21 @@ module gamerddz.page {
         protected onBtnTweenEnd(e: LEvent, target: any) {
             switch (target) {
                 case this._viewUI.btn_create_room:
-                    this._game.uiRoot.general.open(RddzPageDef.PAGE_DDZ_CREATE_CARDROOM);
+                    this._game.uiRoot.general.open(DatingPageDef.PAGE_PDK_CREATE_CARDROOM, (page: gamedating.page.CreateCardRoomBase) => {
+                        page.game_id = "rpaodekuai";
+                    });
                     this.close();
                     break;
-                case this._viewUI.btn_close:
-                    this._game.sceneObjectMgr.leaveStory(true);
-                    break;
+                case this._viewUI.btn_tc:
+                    let paodekuaiStory = this._game.sceneObjectMgr.story as RpaodekuaiStory;
+                    let mapInfo = this._game.sceneObjectMgr.mapInfo as MapInfo;
+                    mapInfo = mapInfo as RpaodekuaiMapInfo;
+                    let mainUnit = this._game.sceneObjectMgr.mainUnit;
+                    if (!paodekuaiStory || !mapInfo || !mainUnit) return;
+                    paodekuaiStory.endRoomCardGame(mainUnit.GetIndex(), mapInfo.GetCardRoomId());
+                    this._game.sceneObjectMgr.leaveStory();
+                    this.close();
+                    break
                 default:
                     break;
             }
@@ -52,13 +61,13 @@ module gamerddz.page {
             this._viewUI.btn_create_room.visible = this._viewUI.box_js_info.visible = this._isGameEnd;
             let str = StringU.substitute("本轮游戏已满{0}局...", HtmlFormat.addHtmlColor(this.dataSource[0], TeaStyle.COLOR_YELLOW));
             TextFieldU.setHtmlText(this._viewUI.lb_js, str);
-            this._viewUI.btn_close.visible = this._isGameEnd;
+            this._viewUI.btn_tc.visible = this._isGameEnd;
             if (isEventOn) {
                 this._viewUI.btn_create_room.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.btn_close.on(LEvent.CLICK, this, this.onBtnClickWithTween);
+                this._viewUI.btn_tc.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             } else {
                 this._viewUI.btn_create_room.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-                this._viewUI.btn_close.off(LEvent.CLICK, this, this.onBtnClickWithTween);
+                this._viewUI.btn_tc.off(LEvent.CLICK, this, this.onBtnClickWithTween);
             }
         }
 
@@ -101,17 +110,41 @@ module gamerddz.page {
         setData(game: Game, data: any) {
             this._game = game;
             this._data = data;
+            this.img_ct.visible = false;
+            this.img_fct.visible = false;
+            this.lab_double.visible = false;
+            this.img_bomb.visible = false;
             this.img_banker.visible = this._data.isDiZhu;
             this.img_banker.skin = Path_game_rddz.ui_ddz + "tu_dizhu.png";
-            this.img_bg.visible = this._data.isMain;
             this.lab_name.text = this._data.name;
             this.lab_chip.text = this._data.multiple;
-            this.lab_multiple.text = this._data.cardCount;
+            this.lab_multiple.text = this._data.cardCount + "张";
             this.lab_point.text = this._data.point ? this._data.point : "0";
             this.lbl_totalpoint.text = String(this._data.totalPoint);
             this.lab_name.color = this._data.isMain ? "#cc90ff" : "#ffffff";
             this.lab_point.color = parseFloat(this._data.point) >= 0 ? "#069e00" : "#ff0000";
             this.lbl_totalpoint.color = parseFloat(this._data.totalPoint) >= 0 ? "#069e00" : "#ff0000";
+            if (this._data.isDiZhu) {
+                //地主
+                if (this._data.chuntianType == 1) {
+                    //春天
+                    this.img_ct.visible = true;
+                } else if (this._data.chuntianType == 2) {
+                    //反春天
+                    this.lab_double.visible = true;
+                }
+            } else {
+                //农民
+                if (this._data.chuntianType == 1) {
+                    this.lab_double.visible = true;
+                } else if (this._data.chuntianType == 2) {
+                    this.img_fct.visible = true;
+                }
+            }
+            if (this._data.bombNum > 0) {
+                this.img_bomb.visible = true;
+                this.lab_bomb.text = this._data.bombNum;
+            }
         }
 
         destroy() {
