@@ -95,7 +95,7 @@ module gamerddz.page {
         }
     }
 
-    class ListRecordItem extends ui.nqp.game_ui.tongyong.JieSuanRender2UI {
+    class ListRecordItem extends ui.nqp.game_ui.doudizhu.component.JieSuanRender2_ddzUI {
         private _game: Game;
         private _data: any;
         setData(game: Game, data: any) {
