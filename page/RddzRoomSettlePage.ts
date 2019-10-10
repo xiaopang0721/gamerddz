@@ -12,12 +12,13 @@ module gamerddz.page {
             this._isClickBlack = false;
             this._asset = [
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
             ];
         }
 
         // 页面初始化函数
         protected init(): void {
-            this._viewUI = this.createView('game_ui.paodekuai.JieSuan_FangKaUI');
+            this._viewUI = this.createView('game_ui.doudizhu.JieSuan_FangKaUI');
             this.addChild(this._viewUI);
         }
 
@@ -41,9 +42,9 @@ module gamerddz.page {
                     this.close();
                     break;
                 case this._viewUI.btn_tc:
-                    let paodekuaiStory = this._game.sceneObjectMgr.story as RpaodekuaiStory;
-                    let mapInfo = this._game.sceneObjectMgr.mapInfo as MapInfo;
-                    mapInfo = mapInfo as RpaodekuaiMapInfo;
+                    let paodekuaiStory = this._game.sceneObjectMgr.story;
+                    let mapInfo = this._game.sceneObjectMgr.mapInfo;
+                    mapInfo = mapInfo;
                     let mainUnit = this._game.sceneObjectMgr.mainUnit;
                     if (!paodekuaiStory || !mapInfo || !mainUnit) return;
                     paodekuaiStory.endRoomCardGame(mainUnit.GetIndex(), mapInfo.GetCardRoomId());

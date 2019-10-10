@@ -29,7 +29,7 @@ module gamerddz {
                 clipWidth: 33,
                 clipHeight: 51,
                 clipX: 10,
-                space: -15
+                space: -10
             };
 
             //扣钱飘字
@@ -39,15 +39,15 @@ module gamerddz {
                 clipWidth: 33,
                 clipHeight: 51,
                 clipX: 10,
-                space: -15
+                space: -10
             };
 
             //斗地主倍数
             this.DDZ_BEISHU = {
                 source: Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
                 url: Path_game_rddz.ui_ddz + 'clip_xq.png',
-                clipWidth: 32,
-                clipHeight: 36,
+                clipWidth: 72,
+                clipHeight: 72,
                 clipX: 10,
                 space: 0
             };

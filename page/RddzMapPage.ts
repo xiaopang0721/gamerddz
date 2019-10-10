@@ -265,7 +265,7 @@ module gamerddz.page {
                         this.clearMapInfoListen();
                         this._ddzMgr.clear();
                         this._ddzStory.clear();
-                        // this.clearClip();
+                        this.clearClip();
                         this.clearMoneyImg();
                         this._game.sceneObjectMgr.leaveStory(true);
                     } else {
@@ -431,7 +431,7 @@ module gamerddz.page {
             let mainUnit = this._game.sceneObjectMgr.mainUnit;
             if (!mainUnit) return;
             let identity = mainUnit.GetIdentity();
-            this._viewUI.btn_tuoguan.skin = identity == 1 ? Path_game_rpaodekuai.ui_paodekuai + "btn_tg1.png" : Path_game_rpaodekuai.ui_paodekuai + "btn_tg0.png";
+            this._viewUI.btn_tuoguan.skin = identity == 1 ? Path_game_rddz.ui_ddz + "btn_tg1.png" : Path_game_rddz.ui_ddz + "btn_tg0.png";
             this._viewUI.box_tg.visible = identity == 1 ? true : false;
             this._viewUI.btn_qxtg.visible = identity == 1 ? true : false;
             this._viewUI.tg_info.visible = false;
@@ -669,7 +669,7 @@ module gamerddz.page {
             }
             if (state == MAP_STATUS.MAP_STATE_WAIT) {
                 this.openSettlePage();
-                // this.clearClip();
+                this.clearClip();
                 this.updateViewUI();
                 this.onUpdateUnit();
                 this.resetData();
@@ -688,7 +688,7 @@ module gamerddz.page {
             }
             if (state == MAP_STATUS.MAP_STATE_END) {
                 this.openSettlePage();
-                // this.clearClip();
+                this.clearClip();
                 this.updateViewUI();
                 this.onUpdateUnit();
                 this.resetData();
@@ -762,8 +762,8 @@ module gamerddz.page {
             this._toupiaoMgr && this._toupiaoMgr.update(diff);
             // let cur_time: number = Laya.timer.currTimer;
             // if (this._nextUpdateTime > 0 && this._nextUpdateTime > cur_time) return;
-            // this._nextUpdateTime = cur_time + 300;
-            // this.addMoneyClip(-30, 0,true);
+            // this._nextUpdateTime = cur_time + 2000;
+            // this.addMoneyClip(MathU.randomRange(-30,30), 0,true);
         }
 
         //操作倒计时
@@ -1163,6 +1163,7 @@ module gamerddz.page {
 
         //底住加倍        
         private showDZJB() {
+            this._viewUI.view_dzjb.visible = true;
             this._viewUI.view_dzjb.ani1.play(0, false);
             this._viewUI.view_dzjb.ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [this._viewUI.view_dzjb, () => { }]);
         }
@@ -1572,14 +1573,14 @@ module gamerddz.page {
         //倍数显示
         private showMultiple(): void {
             this._multipleClip = new DdzClip(DdzClip.DDZ_BEISHU);
-            // this._multipleClip.anchorX = 0.5;
-            // this._multipleClip.anchorY = 0.5;
+            this._multipleClip.anchorX = 0.5;
+            this._multipleClip.anchorY = 0.5;
             let preSkin = Path_game_rddz.ui_ddz + "tu_x.png";
             let postSkin = Path_game_rddz.ui_ddz + "tu_b.png";
             let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
             this._multipleClip.setText(multiple + "", true, false, preSkin, postSkin);
-            let posX = 639;
-            let posY = 75;
+            let posX = 630;
+            let posY = 80;
             this._viewUI.box_view.addChild(this._multipleClip);
             this._multipleClip.pos(posX, posY);
         }
@@ -1600,29 +1601,17 @@ module gamerddz.page {
             if (!idx) return;
             let index = (pos - idx + MAX_COUNT) % MAX_COUNT;
             let viewPlayer: ui.nqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
+            if (!viewPlayer) return;
+            viewPlayer.box_money.visible = true;
             let valueClip: DdzClip;
-            if (this._clipList.length > 0 && !viewPlayer.clip_num.visible) {
-                //初始化过了艺术字
-                for (let i = 0; i < this._clipList.length; i++) {
-                    let curObj: any = this._clipList[0];
-                    if (curObj && curObj.pos == index) {
-                        if (value >= 0) valueClip = curObj.addMoneyClip;
-                        else valueClip = curObj.subMoneyClip;
-                    }
-                }
-            }
-            if (!valueClip) {
-                let obj = {
-                    pos: index,
-                    addMoneyClip: new DdzClip(DdzClip.ADD_MONEY_FONT),
-                    subMoneyClip: new DdzClip(DdzClip.SUB_MONEY_FONT),
-                }
-                valueClip = value >= 0 ? obj.addMoneyClip : obj.subMoneyClip;
-                viewPlayer.clip_num.visible = false;
-                valueClip.centerX = viewPlayer.clip_num.centerX;
-                valueClip.centerY = viewPlayer.clip_num.centerY;
-                viewPlayer.clip_num.parent.addChild(valueClip);
-            }
+            if (value > 0) valueClip = new DdzClip(DdzClip.ADD_MONEY_FONT)
+            else valueClip = new DdzClip(DdzClip.SUB_MONEY_FONT)
+            this._clipList.push(valueClip);
+            viewPlayer.clip_num.visible = false
+            valueClip.centerX = viewPlayer.clip_num.centerX;
+            valueClip.centerY = viewPlayer.clip_num.centerY;
+            viewPlayer.clip_num.parent.addChild(valueClip);
+
             let preSkin = value >= 0 ? PathGameTongyong.ui_tongyong_fk + "tu_+.png" : PathGameTongyong.ui_tongyong_fk + "tu_-.png";   //符号
             let imgBgSkin = value >= 0 ? PathGameTongyong.ui_tongyong_fk + "tu_jiafd.png" : PathGameTongyong.ui_tongyong_fk + "tu_jianfd.png";   //背景图
             let moneyStr = EnumToString.getPointBackNum(Math.abs(value), 2);
@@ -1630,7 +1619,15 @@ module gamerddz.page {
             viewPlayer.box_money.visible = true;
             viewPlayer.img_bg.skin = imgBgSkin;
             viewPlayer.ani1.play(0, false);
-            viewPlayer.ani1.on(LEvent.COMPLETE, this, this.onUIAniOver, [viewPlayer]);
+            viewPlayer.ani1.on(LEvent.COMPLETE, this, this.onClipComplete, [viewPlayer, valueClip]);
+        }
+
+        private onClipComplete(viewPlayer: ui.nqp.game_ui.doudizhu.component.TouXiangUI, valueClip: ClipUtil): void {
+            if (viewPlayer) {
+                viewPlayer.box_money.visible = false;
+                viewPlayer.ani1.off(LEvent.COMPLETE, this, this.onClipComplete);
+            }
+            valueClip.removeSelf();
         }
 
         //清理飘钱动画
@@ -1638,8 +1635,7 @@ module gamerddz.page {
             if (this._clipList && this._clipList.length) {
                 for (let i: number = 0; i < this._clipList.length; i++) {
                     let clip: any = this._clipList[i];
-                    clip.addMoneyClip.removeSelf();
-                    clip.subMoneyClip.removeSelf();
+                    clip.removeSelf();
                     clip = null;
                 }
             }
@@ -1685,7 +1681,7 @@ module gamerddz.page {
                 switch (msg.reason) {
                     case Operation_Fields.OPRATE_TELEPORT_MAP_CREATE_ROOM_SUCCESS://在地图中重新创建房间成功
                         this.resetData();
-                        // this.clearClip();
+                        this.clearClip();
                         this.clearMoneyImg();
                         this._battleIndex = -1;
                         this._game.sceneObjectMgr.clearOfflineObject();
