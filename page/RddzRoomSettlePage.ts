@@ -37,8 +37,8 @@ module gamerddz.page {
             switch (target) {
                 case this._viewUI.btn_create_room:
                     this._game.uiRoot.general.open(DatingPageDef.PAGE_CREATE_CARD_ROOM, (page: gamedating.page.CreateCardRoomBase) => {
-						page.game_id = RddzPageDef.GAME_NAME;
-					});
+                        page.game_id = RddzPageDef.GAME_NAME;
+                    });
                     this.close();
                     break;
                 case this._viewUI.btn_tc:
@@ -146,6 +146,7 @@ module gamerddz.page {
                 this.img_bomb.visible = true;
                 this.lab_bomb.text = this._data.bombNum;
             }
+            this.lab_double.centerX = this.lab_multiple.centerX + this.lab_multiple.width + 5;
         }
 
         destroy() {
