@@ -88,7 +88,7 @@ module gamerddz.data {
 						this._addShowCards = true;
 						battleObj.push({ type: 2, title: "结束余牌" });
 					}
-					let desc: string = "[" + info.CardType + "]";
+					let desc: string = "[" + info.CardType + "张]";
 					let cards = info.Cards;
 					battleObj.push({ type: 3, name: name, desc: desc, cards: cards });
 					this._showcardCount++;
