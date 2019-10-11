@@ -57,9 +57,11 @@ module gamerddz.data {
 						this._addDiZhu = true;
 						battleObj.push({ type: 2, title: "开始抢地主" });
 					}
-					let desc = info.OptType == 1 ? name + "抢地主" : name + "不抢地主";
-					battleObj.push({ type: 6, desc: desc });
-				} else if (info instanceof gamecomponent.object.BattleInfoQiangDZEnd) { //定地主
+					if (info.OptType == 1) {
+						let desc = name + "抢地主";
+						battleObj.push({ type: 6, desc: desc });
+					}
+				} else if (info instanceof gamecomponent.object.BattleInfoSimpleCard) { //找到地主
 					if (!this._addFirst) {
 						this._addFirst = true;
 						battleObj.push({ type: 2, title: "先手玩家" });
