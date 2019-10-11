@@ -51,7 +51,7 @@ module gamerddz.page {
         private _surplusCards: any = [17, 17, 17];    //各个座位剩余牌数
         private _bombNums: any = [0, 0, 0]; //各个座位的炸弹数
         private _headPos: any = [[33, 553], [1160, 197], [27, 197]]; //各个头像坐标
-        private _lightPointTemp: Array<any> = [[-10, 1], [194, 1], [18, 1]];  //指示灯位置
+        private _lightPointTemp: Array<any> = [[-10, 1], [183, 1], [25, 1]];  //指示灯位置
 
         private _moneyChange: number;   //主玩家金币变化
         private _qiangCount: number = 0;    //抢关次数
@@ -69,6 +69,7 @@ module gamerddz.page {
         private _toupiaoMgr: TouPiaoMgr;//投票解散管理器
         private _chuntianType: number = 0;  //春天类型
         private _isCXFP: boolean = false;    //是否重新发牌 
+        private _isFirstQiang: boolean = false;  //是否第一次抢地主
 
         constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
             super(v, onOpenFunc, onCloseFunc);
@@ -140,6 +141,7 @@ module gamerddz.page {
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_MAPINFO_CHANGE, this, this.onUpdateMapInfo);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_ADD_UNIT, this, this.onUnitAdd);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_REMOVE_UNIT, this, this.onUnitRemove);
+            this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_NAME_CHANGE, this, this.onUnitComing);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_MONEY_CHANGE, this, this.onUpdateUnit);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_CHANGE, this, this.onUpdateUnit);
             this._game.sceneObjectMgr.on(SceneObjectMgr.EVENT_UNIT_ACTION, this, this.onUpdateUnit);
@@ -359,8 +361,31 @@ module gamerddz.page {
             }
         }
 
+        //名字发生变化
+        private onUnitComing(): void {
+            for (let i = 0; i < this._unitPlayArr.length; i++) {
+                let unitObj = this._unitPlayArr[i];
+                let unit: Unit = unitObj.unit;
+                let name = unit.GetName();
+                if (!name) continue;
+                //欢迎进场,不能是自己,且没播过，且有名字
+                if (this._game.sceneObjectMgr.mainUnit != unit && !unitObj.isPlay && name) {
+                    this._game.showTips(StringU.substitute("欢迎{0}加入房间", name));
+                    unitObj.isPlay = true;
+                }
+            }
+        }
+
+        //进场
+        private _unitPlayArr: Array<any> = [];
         private onUnitAdd(u: Unit): void {
+            let obj = {
+                unit: u,
+                isPlay: false
+            }
+            this._unitPlayArr.push(obj);
             this.onUpdateUnit();
+            this.onUnitComing();
         }
 
         //玩家出去了
@@ -581,6 +606,7 @@ module gamerddz.page {
             let state = this._mapInfo.GetMapState();
             this._viewUI.txt_roomno.text = "牌局号：" + this._mapInfo.GetGameNo();
             let round = this._mapInfo.GetRound() + 1;
+            let posIdx = (betPos - mainIdx + MAX_COUNT) % MAX_COUNT;
             this._viewUI.text_round.text = "第" + round + "/" + this._mapInfo.GetCardRoomGameNumber() + "局";
             if (state == MAP_STATUS_DDZ.MAP_STATE_DEAL) {
                 this._viewUI.btn_back.skin = PathGameTongyong.ui_tongyong_general + "btn_js.png";
@@ -637,11 +663,17 @@ module gamerddz.page {
                 let postSkin = Path_game_rddz.ui_ddz + "tu_b.png";
                 let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
                 this._multipleClip.setText(multiple + "", true, false, preSkin, postSkin);
+                //轮到谁的指示灯
+                this._viewUI.img_point.rotation = this._lightPointTemp[posIdx][0];
+                this._viewUI.img_point.scaleX = this._lightPointTemp[posIdx][1];
+                this._viewUI.img_point.visible = true;
             }
             if (state == MAP_STATUS_DDZ.MAP_STATE_DIZHU) {
                 if (betPos == mainIdx) {
                     this._viewUI.text_qz_info.visible = false;
                     this._viewUI.box_qiang.visible = true;
+                    this._viewUI.img_qiang.skin = this._isFirstQiang ? Path_game_rddz.ui_ddz + "tu_qdz.png" : Path_game_rddz.ui_ddz + "tu_jdz.png";
+                    this._viewUI.img_buqiang.skin = this._isFirstQiang ? Path_game_rddz.ui_ddz + "tu_bq.png" : Path_game_rddz.ui_ddz + "tu_bj.png";
                 } else {
                     this._viewUI.text_qz_info.visible = true;
                 }
@@ -661,13 +693,8 @@ module gamerddz.page {
                 }
                 //清除不出的提示和出的牌
                 this._ddzMgr.clearPlayingCard(betPos);
-                let posIdx = (betPos - mainIdx + MAX_COUNT) % MAX_COUNT;
                 this._viewUI["img_tishi" + posIdx].visible = false;
                 this._viewUI["img_type" + posIdx].visible = false;
-                //轮到谁的指示灯
-                this._viewUI.img_point.visible = true;
-                this._viewUI.img_point.rotation = this._lightPointTemp[posIdx][0];
-                this._viewUI.img_point.scaleX = this._lightPointTemp[posIdx][1];
             } else {
                 this._viewUI.box_btn.visible = false;
                 this._viewUI.btn_tuoguan.visible = false;
@@ -995,10 +1022,19 @@ module gamerddz.page {
                             } else {
                                 this._viewUI.text_qz_info.visible = false;
                             }
-                            this.showQiPaoKuang(posIdx, Path_game_rddz.ui_ddz + (OptType ? "effect/qipai/tu_qpqdz.png" : "effect/qipai/tu_qpbq.png"))
-                            if (OptType) {
-                                this.showDZJB();
+                            let skinStr = ""
+                            if (!this._isFirstQiang) {
+                                skinStr = Path_game_rddz.ui_ddz + (OptType ? "effect/qipai/tu_qpjdz.png" : "effect/qipai/tu_qpbj.png");
+                                //有人叫地主了
+                                if (OptType)
+                                    this._isFirstQiang = true;
+                            } else {
+                                skinStr = Path_game_rddz.ui_ddz + (OptType ? "effect/qipai/tu_qpqdz.png" : "effect/qipai/tu_qpbq.png")
+                                if (OptType) {
+                                    this.showDZJB();
+                                }
                             }
+                            this.showQiPaoKuang(posIdx, skinStr);
                             if (!this._ddzMgr.isReLogin) {
                                 let unit = this._game.sceneObjectMgr.getUnitByIdx(idx);
                                 if (unit) {
@@ -1432,51 +1468,84 @@ module gamerddz.page {
 
         //轮到自己时，按钮状态
         private CheckBtnStatus(mainIdx): void {
-            if (this._playCardsConfig.player == mainIdx || this._playCardsConfig.card_type == 0) {  //有发牌权
-                this._viewUI.btn_pass.mouseEnabled = false;
-                this._viewUI.img_pass.visible = true;
-                this._viewUI.btn_tishi.mouseEnabled = true;
-                this._viewUI.img_tishi.visible = false;
-                this._viewUI.btn_chupai.mouseEnabled = false;
-                this._viewUI.img_chupai.visible = true;
-                let type: number = this._ddzMgr.checkCardsType(this._chooseCards);
-                if (type == 0) {    //选的牌不对
-                    for (let i = 0; i < this._ddzMgr.allCards.length; i++) {
-                        let card = this._ddzMgr.allCards[i];
-                        card.toggle = false;
-                    }
-                    this._chooseCards = [];
-                    this._viewUI.btn_chupai.mouseEnabled = false;
-                    this._viewUI.img_chupai.visible = true;
+            this._viewUI.btn_tishi.centerX = 0;
+            this._viewUI.img_tishi.centerX = -1;
+            this._viewUI.btn_pass.centerX = -186;
+            this._viewUI.img_pass.centerX = -186;
+            let cards = this._ddzMgr.promptBtn(this._ddzMgr.allCards, this._playCardsConfig.card_type, this._playCardsConfig.card_len, this._playCardsConfig.max_val, false);
+            let result = cards.length > 0 ? true : false;
+            if (this._game.sceneObjectMgr.mainUnit.GetIdentity() == 1) {
+                //托管中
+                this._viewUI.box_btn.visible = false;
+                if (!result) {
+                    //没有可出得牌
+                    this._viewUI.tg_info.visible = true;
                 } else {
-                    this._viewUI.btn_chupai.mouseEnabled = true;
-                    this._viewUI.img_chupai.visible = false;
+                    this._viewUI.tg_info.visible = false;
                 }
             } else {
-                //手里的牌
-                let cards = this._ddzMgr.promptBtn(this._ddzMgr.allCards, this._playCardsConfig.card_type, this._playCardsConfig.card_len, this._playCardsConfig.max_val, false);
-                let result = cards.length > 0 ? true : false;
-                this._viewUI.btn_tishi.mouseEnabled = result;
-                this._viewUI.img_tishi.visible = !result;
-                this._viewUI.btn_pass.mouseEnabled = true;
-                this._viewUI.img_pass.visible = false;
-                this._viewUI.btn_chupai.mouseEnabled = false;
-                this._viewUI.img_chupai.visible = true;
-                //选中的牌
-                let choose = this._ddzMgr.promptBtn(this._chooseCards, this._playCardsConfig.card_type, this._playCardsConfig.card_len, this._playCardsConfig.max_val, false);
-                if (choose.length == 0) {   //不能出的牌
-                    for (let i = 0; i < this._ddzMgr.allCards.length; i++) {
-                        let card = this._ddzMgr.allCards[i];
-                        card.toggle = false;
-                    }
-                    this._chooseCards = [];
+                this._viewUI.box_btn.visible = true;
+                if (this._playCardsConfig.player == mainIdx || this._playCardsConfig.card_type == 0) {  //有发牌权
+                    this._viewUI.btn_pass.mouseEnabled = false;
+                    this._viewUI.img_pass.visible = true;
+                    this._viewUI.btn_tishi.mouseEnabled = true;
+                    this._viewUI.img_tishi.visible = false;
                     this._viewUI.btn_chupai.mouseEnabled = false;
                     this._viewUI.img_chupai.visible = true;
+                    let type: number = this._ddzMgr.checkCardsType(this._chooseCards);
+                    if (type == 0) {    //选的牌不对
+                        for (let i = 0; i < this._ddzMgr.allCards.length; i++) {
+                            let card = this._ddzMgr.allCards[i];
+                            card.toggle = false;
+                        }
+                        this._chooseCards = [];
+                        this._viewUI.btn_chupai.mouseEnabled = false;
+                        this._viewUI.img_chupai.visible = true;
+                    } else {
+                        this._viewUI.btn_chupai.mouseEnabled = true;
+                        this._viewUI.img_chupai.visible = false;
+                    }
                 } else {
-                    this._viewUI.btn_chupai.mouseEnabled = true;
-                    this._viewUI.img_chupai.visible = false;
+                    //手里的牌
+                    this._viewUI.btn_pass.visible = true;
+                    this._viewUI.btn_pass.mouseEnabled = true;
+                    this._viewUI.img_pass.visible = false;
+                    this._viewUI.btn_chupai.visible = true
+                    this._viewUI.btn_chupai.mouseEnabled = false;
+                    this._viewUI.img_chupai.visible = true;
+                    this._viewUI.btn_tishi.visible = true;
+                    this._viewUI.btn_tishi.mouseEnabled = result;
+                    this._viewUI.img_tishi.visible = !result;
+                    //选中的牌
+                    if (result) {
+                        //有可以出的牌
+                        let choose = this._ddzMgr.promptBtn(this._chooseCards, this._playCardsConfig.card_type, this._playCardsConfig.card_len, this._playCardsConfig.max_val, false);
+                        if (choose.length == 0) {   //不能出的牌
+                            for (let i = 0; i < this._ddzMgr.allCards.length; i++) {
+                                let card = this._ddzMgr.allCards[i];
+                                card.toggle = false;
+                            }
+                            this._chooseCards = [];
+                            this._viewUI.btn_chupai.mouseEnabled = false;
+                            this._viewUI.img_chupai.visible = true;
+                        } else {
+                            this._viewUI.btn_chupai.mouseEnabled = true;
+                            this._viewUI.img_chupai.visible = false;
+                        }
+                    } else {
+                        //没有可以出的牌
+                        this._viewUI.btn_chupai.visible = false;
+                        this._viewUI.img_chupai.visible = false;
+                        this._viewUI.btn_tishi.visible = false;
+                        this._viewUI.img_tishi.visible = false;
+                        this._viewUI.btn_pass.visible = true;
+                        this._viewUI.img_pass.visible = false;
+                        this._viewUI.img_pass.centerX = this._viewUI.img_tishi.centerX;
+                        this._viewUI.btn_pass.centerX = this._viewUI.btn_tishi.centerX;
+                    }
                 }
             }
+
         }
 
         //UI的位置转为座位
@@ -1590,12 +1659,13 @@ module gamerddz.page {
             this._multipleClip = new DdzClip(DdzClip.DDZ_BEISHU);
             this._multipleClip.anchorX = 0.5;
             this._multipleClip.anchorY = 0.5;
+            this._multipleClip.scale(0.8, 0.8);
             let preSkin = Path_game_rddz.ui_ddz + "tu_x.png";
             let postSkin = Path_game_rddz.ui_ddz + "tu_b.png";
             let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
             this._multipleClip.setText(multiple + "", true, false, preSkin, postSkin);
-            let posX = 630;
-            let posY = 80;
+            let posX = 635;
+            let posY = 90;
             this._viewUI.box_view.addChild(this._multipleClip);
             this._multipleClip.pos(posX, posY);
         }
@@ -1715,13 +1785,13 @@ module gamerddz.page {
             if (mainUnit.GetRoomMaster() != 1) {
                 TongyongPageDef.ins.alertRecharge(StringU.substitute("只有房主才可以选择开始游戏哦"), () => {
                 }, () => {
-                }, true, PathGameTongyong.ui_tongyong_general + "btn_qd.png");
+                }, true, TongyongPageDef.TIPS_SKIN_STR["qd"], TongyongPageDef.TIPS_SKIN_STR["title_ts"]);
                 return;
             }
             if (this.getUnitCount() < MAX_COUNT) {
                 TongyongPageDef.ins.alertRecharge(StringU.substitute("老板，再等等嘛，需要" + MAX_COUNT + "个人才可以开始"), () => {
                 }, () => {
-                }, true, PathGameTongyong.ui_tongyong_general + "btn_qd.png");
+                }, true, TongyongPageDef.TIPS_SKIN_STR["qd"], TongyongPageDef.TIPS_SKIN_STR["title_ts"]);
                 return;
             }
             this._ddzStory.startRoomCardGame(mainUnit.guid, this._mapInfo.GetCardRoomId());
@@ -1813,6 +1883,7 @@ module gamerddz.page {
             this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_COUNT_DOWN, this, this.updateCountDown);//倒计时更新
             this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_ADD_UNIT, this, this.onUnitAdd);
             this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_REMOVE_UNIT, this, this.onUnitRemove);
+            this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_NAME_CHANGE, this, this.onUnitComing);
             this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_MONEY_CHANGE, this, this.onUpdateUnit);
             this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_CHANGE, this, this.onUpdateUnit);
             this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_ACTION, this, this.onUpdateUnit);
@@ -1858,6 +1929,7 @@ module gamerddz.page {
 
                 this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_STATUS_CHECK, this, this.onUpdateMapState);
                 this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_BATTLE_CHECK, this, this.updateBattledInfo);
+                this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_UNIT_NAME_CHANGE, this, this.onUnitComing);
                 this._game.sceneObjectMgr.off(RddzMapInfo.EVENT_DDZ_COUNT_DOWN, this, this.updateCountDown);//倒计时更新
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_ADD_UNIT, this, this.onUnitAdd);
                 this._game.sceneObjectMgr.off(SceneObjectMgr.EVENT_REMOVE_UNIT, this, this.onUnitRemove);
