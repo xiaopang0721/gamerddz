@@ -673,6 +673,7 @@ module gamerddz.page {
                     this._viewUI.text_qz_info.visible = false;
                     this._viewUI.box_qiang.visible = true;
                     this._viewUI.img_qiang.skin = this._isFirstQiang ? Path_game_rddz.ui_ddz + "tu_qdz.png" : Path_game_rddz.ui_ddz + "tu_jdz.png";
+                    this._viewUI.img_buqiang.skin = this._isFirstQiang ? Path_game_rddz.ui_ddz + "tu_bq.png" : Path_game_rddz.ui_ddz + "tu_bj.png";
                 } else {
                     this._viewUI.text_qz_info.visible = true;
                 }
