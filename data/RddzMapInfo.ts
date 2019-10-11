@@ -60,14 +60,11 @@ module gamerddz.data {
 					let desc = info.OptType == 1 ? name + "抢地主" : name + "不抢地主";
 					battleObj.push({ type: 6, desc: desc });
 				} else if (info instanceof gamecomponent.object.BattleInfoQiangDZEnd) { //定地主
-					let desc = name + HtmlFormat.addHtmlColor("抢得地主", TeaStyle.COLOR_GREEN);
-					battleObj.push({ type: 6, desc: desc });
-				} else if (info instanceof gamecomponent.object.BattleInfoSeeCard) { //先手
 					if (!this._addFirst) {
 						this._addFirst = true;
 						battleObj.push({ type: 2, title: "先手玩家" });
 					}
-					let desc = name + HtmlFormat.addHtmlColor("地主", TeaStyle.COLOR_GREEN);
+					let desc = name + HtmlFormat.addHtmlColor("抢得地主", TeaStyle.COLOR_GREEN);
 					battleObj.push({ type: 6, desc: desc });
 				} else if (info instanceof gamecomponent.object.BattleInfoSettle) {	//结算
 					if (!this._addSettle) {
@@ -113,7 +110,7 @@ module gamerddz.data {
 			name = users[index - 1].name;
 			return name
 		}
-	
+
 		//遍历座位获取玩家总数
 		private GetPlayerNumFromSeat(): number {
 			let num: number = 0;
