@@ -28,7 +28,7 @@ module gamerddz.page {
             this._viewUI.list_settle.itemRender = this.createChildren("game_ui.doudizhu.component.JieSuanRender2_ddzUI", ListRecordItem);
             this._viewUI.list_settle.renderHandler = new Handler(this, this.renderHandler);
             this._viewUI.list_settle.dataSource = this.dataSource[2];
-            this._isGameEnd = this.dataSource[3] >= MAP_STATUS.MAP_STATE_END;
+            this._isGameEnd = this.dataSource[3] >= 11;
             this.setGameEndBtnState(this._isGameEnd);
         }
 
@@ -36,9 +36,9 @@ module gamerddz.page {
         protected onBtnTweenEnd(e: LEvent, target: any) {
             switch (target) {
                 case this._viewUI.btn_create_room:
-                    this._game.uiRoot.general.open(DatingPageDef.PAGE_PDK_CREATE_CARDROOM, (page: gamedating.page.CreateCardRoomBase) => {
-                        page.game_id = "rpaodekuai";
-                    });
+                    this._game.uiRoot.general.open(DatingPageDef.PAGE_CREATE_CARD_ROOM, (page: gamedating.page.CreateCardRoomBase) => {
+						page.game_id = RddzPageDef.GAME_NAME;
+					});
                     this.close();
                     break;
                 case this._viewUI.btn_tc:
