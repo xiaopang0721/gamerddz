@@ -199,6 +199,7 @@ module gamerddz.page {
 
         //打开时要处理的东西
         private updateViewUI(): void {
+            this._isFirstQiang = false;
             this._viewUI.img_point.visible = false;
             this._viewUI.img_menu.visible = false;
             this._viewUI.box_btn.visible = false;
@@ -224,6 +225,9 @@ module gamerddz.page {
             this._viewUI.btn_qxtg.visible = false;
             this._viewUI.tg_info.visible = false;
             this._viewUI.text_qz_info.visible = false;
+            this._bombNums = [0, 0, 0];
+            this._chuntianType = 0;  //春天类型
+            this._isCXFP = false;    //是否重新发牌 
             //按钮切换
             let mainUnit: Unit = this._game.sceneObjectMgr.mainUnit;
             if (!mainUnit) return;
@@ -415,15 +419,17 @@ module gamerddz.page {
                     let money = EnumToString.getPointBackNum(unit.GetMoney(), 2);
                     viewPlayer.txt_money.text = money.toString();
                     //托管状态
-                    if (unit.GetIdentity() == 1) {
-                        viewPlayer.img_tuoguan.visible = true;
-                        if (posIdx == idx) {
-                            this.updateTGUI();
-                        }
-                    } else if (unit.GetIdentity() == 0) {
-                        viewPlayer.img_tuoguan.visible = false;
-                        if (posIdx == idx) {
-                            this.updateTGUI();
+                    if (this._mapInfo.GetMapState() == MAP_STATUS_DDZ.MAP_STATE_PLAYING) {
+                        if (unit.GetIdentity() == 1) {
+                            viewPlayer.img_tuoguan.visible = true;
+                            if (posIdx == idx) {
+                                this.updateTGUI();
+                            }
+                        } else if (unit.GetIdentity() == 0) {
+                            viewPlayer.img_tuoguan.visible = false;
+                            if (posIdx == idx) {
+                                this.updateTGUI();
+                            }
                         }
                     }
                     //头像框
@@ -650,19 +656,24 @@ module gamerddz.page {
                 if (!this._ddzMgr.isShowCards) {
                     this._ddzMgr.showMainCards();
                 }
-                for (let i = 1; i < MAX_COUNT; i++) {
-                    let seat = this.GetSeatFromUiPos(i);
-                    let unit = this._game.sceneObjectMgr.getUnitByIdx(seat);
-                    this._viewUI["box_count" + i].visible = unit;
-                    this._viewUI["lab_count" + i].text = this._surplusCards[i];
-                }
                 if (!this._multipleClip) {
                     this.showMultiple();
                 }
                 let preSkin = Path_game_rddz.ui_ddz + "tu_x.png";
                 let postSkin = Path_game_rddz.ui_ddz + "tu_b.png";
                 let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
-                this._multipleClip.setText(multiple + "", true, false, preSkin, postSkin);
+                for (let i = 1; i < MAX_COUNT; i++) {
+                    let seat = this.GetSeatFromUiPos(i);
+                    let unit = this._game.sceneObjectMgr.getUnitByIdx(seat);
+                    this._viewUI["box_count" + i].visible = unit;
+                    this._viewUI["lab_count" + i].text = this._surplusCards[i];
+                }
+                if (mainIdx == this._diZhuSeat) {
+                    //地主翻一倍
+                    this._multipleClip.setText((multiple * 2) + "", true, false, preSkin, postSkin);
+                } else {
+                    this._multipleClip.setText(multiple + "", true, false, preSkin, postSkin);
+                }
                 //轮到谁的指示灯
                 this._viewUI.img_point.rotation = this._lightPointTemp[posIdx][0];
                 this._viewUI.img_point.scaleX = this._lightPointTemp[posIdx][1];
@@ -705,7 +716,6 @@ module gamerddz.page {
             if (state == MAP_STATUS_DDZ.MAP_STATE_WAIT) {
                 this.openSettlePage();
                 this.clearClip();
-                this.updateViewUI();
                 this.onUpdateUnit();
                 this.resetData();
                 this.clearMoneyImg();
@@ -714,6 +724,7 @@ module gamerddz.page {
                 this._ddzMgr.clear();
             }
             if (state == MAP_STATUS_DDZ.MAP_STATE_SETTLE) {
+                this.updateViewUI();
                 //飘钱
                 this.addBankerWinEff();
                 for (let i = 1; i < MAX_COUNT; i++) {
@@ -1069,11 +1080,20 @@ module gamerddz.page {
                                 this._totalMul = 1;
                             }
                             this._surplusCards[posIdx] = this._surplusCards[posIdx] + info.Cards.length;
+                            let preSkin = Path_game_rddz.ui_ddz + "tu_x.png";
+                            let postSkin = Path_game_rddz.ui_ddz + "tu_b.png";
+                            let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
+                            if (!this._multipleClip) {
+                                this.showMultiple();
+                            }
                             for (let k = 0; k < MAX_COUNT; k++) {
                                 this._viewUI["view_player" + k].img_dizhu.visible = true;
                                 if (k == posIdx) {
                                     this._viewUI["view_player" + k].img_dizhu.img_info.skin = Path_game_rddz.ui_ddz + "tu_dizhu.png";
                                     this._diZhuSeat = info.SeatIndex;
+                                    if (this._diZhuSeat == mainIdx) {
+                                        this._multipleClip.setText((multiple * 2) + "", true, false, preSkin, postSkin);
+                                    }
                                 } else {
                                     this._viewUI["view_player" + k].img_dizhu.img_info.skin = Path_game_rddz.ui_ddz + "tu_nongmin.png";
                                 }
@@ -1451,6 +1471,14 @@ module gamerddz.page {
 
         //选完牌之后，校验出牌按钮状态
         private CheckBtnChuPai(): void {
+            let mainUnit = this._game.sceneObjectMgr.mainUnit;
+            if (!mainUnit) return;
+            let mainIdx = mainUnit.GetIndex();
+            //没有发牌权
+            if (this._playCardsConfig.player != mainIdx && this._playCardsConfig.player != 0) {
+                let cards = this._ddzMgr.promptBtn(this._ddzMgr.allCards, this._playCardsConfig.card_type, this._playCardsConfig.card_len, this._playCardsConfig.max_val, false);
+                if (cards.length == 0) return;
+            }
             let type: number = this._ddzMgr.checkCardsType(this._chooseCards)
             if (type == 0) {
                 this._viewUI.btn_chupai.mouseEnabled = false;
@@ -1458,7 +1486,7 @@ module gamerddz.page {
             } else {
                 if (!this.checkPlayCard(type, this._chooseCards.length, this._ddzMgr.maxCardVal)) {
                     this._viewUI.btn_chupai.mouseEnabled = false;
-                    this._viewUI.img_chupai.visible = true;
+                    this._viewUI.img_chupai.visible = this._viewUI.btn_chupai.visible;
                 } else {
                     this._viewUI.btn_chupai.mouseEnabled = true;
                     this._viewUI.img_chupai.visible = false;
@@ -1477,12 +1505,17 @@ module gamerddz.page {
             if (this._game.sceneObjectMgr.mainUnit.GetIdentity() == 1) {
                 //托管中
                 this._viewUI.box_btn.visible = false;
-                if (!result) {
-                    //没有可出得牌
-                    this._viewUI.tg_info.visible = true;
+                if (this._playCardsConfig.player == mainIdx || this._playCardsConfig.card_type == 0) {
+                    //有出牌权
                 } else {
-                    this._viewUI.tg_info.visible = false;
+                    if (!result) {
+                        //没有可出得牌
+                        this._viewUI.tg_info.visible = true;
+                    } else {
+                        this._viewUI.tg_info.visible = false;
+                    }
                 }
+
             } else {
                 this._viewUI.box_btn.visible = true;
                 if (this._playCardsConfig.player == mainIdx || this._playCardsConfig.card_type == 0) {  //有发牌权
