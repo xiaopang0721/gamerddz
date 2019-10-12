@@ -38,7 +38,7 @@ module gamerddz.manager {
 		private _reStart: boolean = false;//是否重开游戏
 		private _totalUnitCount: number = 3;	// 玩家数量
 		private _centerPosTemp = [640, 450, 36];	//主玩家出牌中间那张牌的位置
-		private _centerPlayPosTemp = [670, 625, 50];	//主玩家手牌中间那张牌的位置
+		private _centerPlayPosTemp = [700, 625, 50];	//主玩家手牌中间那张牌的位置
 		private _playCardsPos = [[1040, 280, -22], [240, 280, 22]];	//其他人出牌第一张位置,3人场
 		private _endCardPos: any = [551, 75, 88];	//三张底牌的第一张位置
 

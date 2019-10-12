@@ -24,7 +24,7 @@ module gamerddz {
 
             //加钱飘字
             this.ADD_MONEY_FONT = {
-                source: PathGameTongyong.atlas_game_ui_tongyong+ "fk.atlas",
+                source: PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
                 url: PathGameTongyong.ui_tongyong_fk + 'clip_+123.png',
                 clipWidth: 33,
                 clipHeight: 51,
@@ -34,7 +34,7 @@ module gamerddz {
 
             //扣钱飘字
             this.SUB_MONEY_FONT = {
-                source: PathGameTongyong.atlas_game_ui_tongyong+ "fk.atlas",
+                source: PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
                 url: PathGameTongyong.ui_tongyong_fk + 'clip_-123.png',
                 clipWidth: 33,
                 clipHeight: 51,
@@ -52,7 +52,10 @@ module gamerddz {
                 space: 0
             };
         }
-        private _clip: ClipCell;
+        public _clip: ClipCell;
+        get clip() {
+            return this._clip;
+        }
         constructor(font: any) {
             super();
             this._clip = ObjectPools.malloc(ClipCell, [this, font]) as ClipCell;
@@ -109,7 +112,7 @@ module gamerddz {
         }
     }
 
-    class ClipCell implements IPoolsObject {
+    export class ClipCell implements IPoolsObject {
         poolName: string = "ClipCell";
         /**
 		 * 进池 （相当于对象dispose函数）
@@ -136,7 +139,7 @@ module gamerddz {
         public _preImage: LImage;
         //后置图片
         public _postImage: LImage;
-        private _num: any;
+        public _num: any;
         private _refTexture: RefAsset;
         private _container: ClipUtil;
         constructor(container: ClipUtil, font: any) {
@@ -172,7 +175,7 @@ module gamerddz {
         private _preSkin: string = null;
         private _postSkin: string = null;
         public setText(str: any, needZero: boolean = false, isTween: boolean = false, preSkin: string = null, postSkin: string = null): void {
-            if (this._num == str && this._needZero == needZero && this._isTween == isTween && this._preSkin == preSkin && this._postSkin == postSkin)  {
+            if (this._num == str && this._needZero == needZero && this._isTween == isTween && this._preSkin == preSkin && this._postSkin == postSkin) {
                 return;
             }
             this._num = str;
