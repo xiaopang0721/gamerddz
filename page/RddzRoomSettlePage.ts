@@ -28,7 +28,7 @@ module gamerddz.page {
             this._viewUI.list_settle.itemRender = this.createChildren("game_ui.doudizhu.component.JieSuanRender2_ddzUI", ListRecordItem);
             this._viewUI.list_settle.renderHandler = new Handler(this, this.renderHandler);
             this._viewUI.list_settle.dataSource = this.dataSource[2];
-            this._isGameEnd = this.dataSource[3] >= 11;
+            this._isGameEnd = this.dataSource[3] >= 12;
             this.setGameEndBtnState(this._isGameEnd);
         }
 

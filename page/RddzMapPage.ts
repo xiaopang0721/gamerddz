@@ -11,10 +11,11 @@ module gamerddz.page {
         MAP_STATE_DEAL_END = 5,		//发牌结束
         MAP_STATE_DIZHU = 6,	//准备抢地主
         MAP_STATE_PLAYING = 7, 	    //准备游戏
-        MAP_STATE_SETTLE = 8,    	//准备结算
-        MAP_STATE_SHOW = 9,         //准备摊牌
-        MAP_STATE_WAIT = 10,      	//等待下一局
-        MAP_STATE_END = 11,			//结束
+        MAP_STATE_CHUNTIAN = 8, 	    //春天
+        MAP_STATE_SETTLE = 9,    	//准备结算
+        MAP_STATE_SHOW = 10,         //准备摊牌
+        MAP_STATE_WAIT = 11,      	//等待下一局
+        MAP_STATE_END = 12,			//结束
     }
     const MONEY_NUM = 24; // 特效金币数量
     const MONEY_FLY_TIME = 50; // 金币飞行时间间隔
@@ -132,7 +133,7 @@ module gamerddz.page {
         // 页面打开时执行函数
         protected onOpen(): void {
             super.onOpen();
-            this.updateViewUI();
+            this.updateViewUI(true);
             this.onUpdateUnitOffline();
             if (this._ddzStory instanceof gamecomponent.story.StoryRoomCardBase) {
                 this.onUpdateMapInfo();
@@ -198,7 +199,7 @@ module gamerddz.page {
         }
 
         //打开时要处理的东西
-        private updateViewUI(): void {
+        private updateViewUI(isInit: boolean = false): void {
             this._isFirstQiang = false;
             this._viewUI.img_point.visible = false;
             this._viewUI.img_menu.visible = false;
@@ -241,7 +242,7 @@ module gamerddz.page {
                 this._viewUI.btn_back.tag = 2;
             }
             for (let i = 0; i < MAX_COUNT; i++) {
-                this._viewUI["view_player" + i].visible = false;
+                if (isInit) this._viewUI["view_player" + i].visible = false;
                 this._viewUI["view_player" + i].img_dizhu.visible = false;
                 this._viewUI["view_player" + i].img_tuoguan.visible = false;
                 this._viewUI["view_player" + i].box_money.visible = false;
@@ -724,7 +725,6 @@ module gamerddz.page {
             }
             if (state == MAP_STATUS_DDZ.MAP_STATE_SETTLE) {
                 //飘钱
-                //判断是否春天或者反春天了,会自己调用结算
                 this.addBankerWinEff();
                 for (let i = 1; i < MAX_COUNT; i++) {
                     this._viewUI["view_baodan" + i].visible = false;
@@ -1152,8 +1152,6 @@ module gamerddz.page {
                                 this._viewUI.box_view.addChild(viewEffect);
                                 viewEffect.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [viewEffect, () => {
                                     this.showDZJB();
-                                    //这时候在出结算动画
-                                    // this.addBankerWinEff();
                                 }]);
                                 viewEffect.ani1.play(1, false);
                             }
