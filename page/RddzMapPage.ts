@@ -725,7 +725,6 @@ module gamerddz.page {
             if (state == MAP_STATUS_DDZ.MAP_STATE_SETTLE) {
                 //飘钱
                 //判断是否春天或者反春天了,会自己调用结算
-
                 this.addBankerWinEff();
                 for (let i = 1; i < MAX_COUNT; i++) {
                     this._viewUI["view_baodan" + i].visible = false;

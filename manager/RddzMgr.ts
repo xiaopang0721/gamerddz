@@ -228,6 +228,8 @@ module gamerddz.manager {
 			//最少也要8张
 			if (cards.length < 8) return false;
 			if (cards.length % 4 != 0) return false;
+			//有没有2
+			if (cards[0].GetCardVal() == 14) return false;
 			let copyCards = [];
 			this.copyTalbe(cards, copyCards);
 			//需要N个4张
@@ -273,6 +275,8 @@ module gamerddz.manager {
 			//最少也要10张
 			if (cards.length < 10) return false;
 			if (cards.length % 5 != 0) return false;
+			//有没有2
+			if (cards[0].GetCardVal() == 14) return false;
 			let copyCards = [];
 			this.copyTalbe(cards, copyCards);
 			//需要N个5张
