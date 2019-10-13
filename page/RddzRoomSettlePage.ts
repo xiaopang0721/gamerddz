@@ -113,7 +113,7 @@ module gamerddz.page {
             this._data = data;
             this.img_ct.visible = false;
             this.img_fct.visible = false;
-            this.lab_double.visible = false;
+            // this.lab_double.visible = false;
             this.img_bomb.visible = false;
             this.img_banker.visible = this._data.isDiZhu;
             this.img_banker.skin = Path_game_rddz.ui_ddz + "tu_dizhu.png";
@@ -132,12 +132,12 @@ module gamerddz.page {
                     this.img_ct.visible = true;
                 } else if (this._data.chuntianType == 2) {
                     //反春天
-                    this.lab_double.visible = true;
+                    // this.lab_double.visible = true;
                 }
             } else {
                 //农民
                 if (this._data.chuntianType == 1) {
-                    this.lab_double.visible = true;
+                    // this.lab_double.visible = true;
                 } else if (this._data.chuntianType == 2) {
                     this.img_fct.visible = true;
                 }
@@ -146,7 +146,7 @@ module gamerddz.page {
                 this.img_bomb.visible = true;
                 this.lab_bomb.text = this._data.bombNum;
             }
-            this.lab_double.centerX = this.lab_multiple.centerX + this.lab_multiple.width + 5;
+            // this.lab_double.centerX = this.lab_multiple.centerX + this.lab_multiple.width + 5;
         }
 
         destroy() {

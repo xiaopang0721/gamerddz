@@ -579,15 +579,15 @@ module gamerddz.page {
         }
 
         // 是否可以提前终止游戏
-        private canEndCardGame() {
-            if (this._isPlaying) {
-                TongyongPageDef.ins.alertRecharge(StringU.substitute("游戏中禁止退出，请先完成本轮" + this._mapInfo.GetCardRoomGameNumber() + "局游戏哦~~"), () => {
-                }, () => {
-                }, true, PathGameTongyong.ui_tongyong_general + "btn_qd.png");
-                return false;
-            }
-            return !this._isPlaying;
-        }
+        // private canEndCardGame() {
+        //     if (this._isPlaying) {
+        //         TongyongPageDef.ins.alertRecharge(StringU.substitute("游戏中禁止退出，请先完成本轮" + this._mapInfo.GetCardRoomGameNumber() + "局游戏哦~~"), () => {
+        //         }, () => {
+        //         }, true, PathGameTongyong.ui_tongyong_general + "btn_qd.png");
+        //         return false;
+        //     }
+        //     return !this._isPlaying;
+        // }
 
         //地图状态
         private onUpdateMapState(): void {
@@ -637,6 +637,7 @@ module gamerddz.page {
                         this._pageHandle.pushClose({ id: RddzPageDef.PAGE_DDZ_CARDROOM_SETTLE, parent: this._game.uiRoot.HUD });
                         this.playDealAni();
                     }]);
+                    this._specialIsPlaying = true;
                     this._ksyxView.ani1.play(1, false);
                 }
 
@@ -725,7 +726,8 @@ module gamerddz.page {
             }
             if (state == MAP_STATUS_DDZ.MAP_STATE_SETTLE) {
                 //飘钱
-                this.addBankerWinEff();
+                if (!this._specialIsPlaying)
+                    this.addBankerWinEff();
                 for (let i = 1; i < MAX_COUNT; i++) {
                     this._viewUI["view_baodan" + i].visible = false;
                     this._viewUI["view_baodan" + i].ani1.stop();
@@ -864,11 +866,17 @@ module gamerddz.page {
         }
 
         //各种特殊牌效果播完
+        private _specialIsPlaying: boolean = false;
         private onPlayAniOver(view: any, callBack?: Function): void {
+            this._specialIsPlaying = false;
             view.ani1.off(LEvent.COMPLETE, this, this.onPlayAniOver);
             view.ani1.gotoAndStop(1);
             this._viewUI.box_view.removeChild(view);
             callBack && callBack();
+            //判断是否当前牌局是否结束了，结束了就在这里播放结算动画，
+            if (this._mapInfo.GetMapState() == MAP_STATUS_DDZ.MAP_STATE_SETTLE) {
+                this.addBankerWinEff();
+            }
         }
 
         //战斗日志
@@ -923,6 +931,7 @@ module gamerddz.page {
                                         } else {
                                             this._viewUI.box_view.addChild(this._feijiView);
                                             this._feijiView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._feijiView]);
+                                            this._specialIsPlaying = true;
                                             this._feijiView.ani1.play(1, false);
                                         }
                                     } else if (type == 7) { //炸弹特效
@@ -935,7 +944,9 @@ module gamerddz.page {
                                                 this._wangZhaWiew.ani1.play(1, false);
                                             } else {
                                                 this._viewUI.box_view.addChild(this._wangZhaWiew);
-                                                this._wangZhaWiew.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._wangZhaWiew, () => { this.showDZJB() }]);
+                                                this._wangZhaWiew.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._wangZhaWiew, () => {}]);
+                                                this.showDZJB()
+                                                this._specialIsPlaying = true;
                                                 this._wangZhaWiew.ani1.play(1, false);
                                             }
                                         } else {
@@ -944,7 +955,9 @@ module gamerddz.page {
                                                 this._bombView.ani1.play(1, false);
                                             } else {
                                                 this._viewUI.box_view.addChild(this._bombView);
-                                                this._bombView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._bombView, () => { this.showDZJB() }]);
+                                                this._bombView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._bombView, () => {}]);
+                                                 this.showDZJB()
+                                                this._specialIsPlaying = true;
                                                 this._bombView.ani1.play(1, false);
                                             }
                                         }
@@ -1534,10 +1547,15 @@ module gamerddz.page {
             } else {
                 this._viewUI.box_btn.visible = true;
                 if (this._playCardsConfig.player == mainIdx || this._playCardsConfig.card_type == 0) {  //有发牌权
+                    this._viewUI.btn_pass.visible = true;
                     this._viewUI.btn_pass.mouseEnabled = false;
                     this._viewUI.img_pass.visible = true;
+
+                    this._viewUI.btn_tishi.visible = true;
                     this._viewUI.btn_tishi.mouseEnabled = true;
                     this._viewUI.img_tishi.visible = false;
+
+                    this._viewUI.btn_chupai.visible = true;
                     this._viewUI.btn_chupai.mouseEnabled = false;
                     this._viewUI.img_chupai.visible = true;
                     let type: number = this._ddzMgr.checkCardsType(this._chooseCards);
@@ -1664,6 +1682,7 @@ module gamerddz.page {
             //游戏开始特效
             this._viewUI.box_view.addChild(viewEffect);
             viewEffect.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [viewEffect, callBack]);
+            this._specialIsPlaying = true;
             viewEffect.ani1.play(1, false);
         }
 
