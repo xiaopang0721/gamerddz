@@ -107,6 +107,7 @@ module gamerddz.page {
         // 页面初始化函数
         protected init(): void {
             this._viewUI = this.createView('game_ui.doudizhu.DouDiZhuUI');
+            this.addChild(this._viewUI);
             this._feijiView = new ui.nqp.game_ui.doudizhu.component.Effect_feijiUI();
             this._wangZhaWiew = new ui.nqp.game_ui.doudizhu.component.Effect_wzUI();
             this._bombView = new ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI();
@@ -117,7 +118,6 @@ module gamerddz.page {
             this._dzslView = new ui.nqp.game_ui.doudizhu.component.Effect_dzslUI();  //地主胜利
             this._fctView = new ui.nqp.game_ui.doudizhu.component.Effect_fctUI();  //反春天
             this._ctView = new ui.nqp.game_ui.doudizhu.component.Effect_chuntianUI();  //反春天
-            this.addChild(this._viewUI);
             this._pageHandle = PageHandle.Get("DdzMapPage");//额外界面控制器
             if (!this._ddzMgr) {
                 if (this._game.sceneObjectMgr.story instanceof RddzStory) {
