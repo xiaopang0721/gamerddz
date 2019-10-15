@@ -341,34 +341,6 @@ module ui.nqp.game_ui.doudizhu.component {
     }
 }
 
-module ui.nqp.game_ui.doudizhu.component {
-    export class WanJia_LUI extends View {
-
-        public static  uiView:any ={"type":"View","props":{"width":370,"height":180},"child":[{"type":"TouXiang","props":{"y":32,"x":24,"runtime":"ui.nqp.game_ui.doudizhu.component.TouXiangUI"}},{"type":"Box","props":{"y":96,"x":143,"width":53,"height":73},"child":[{"type":"Image","props":{"skin":"tongyong_ui/game_ui/tongyong/pai/0.png","scaleY":0.5,"scaleX":0.5}},{"type":"Label","props":{"y":37,"x":26,"wordWrap":true,"width":46,"text":"00","overflow":"visible","leading":6,"height":42,"fontSize":36,"color":"#ffffff","anchorY":0.5,"anchorX":0.5,"align":"center"}}]},{"type":"Box","props":{"y":54,"x":212,"width":276,"height":116,"centerX":165},"child":[{"type":"Image","props":{"y":58.400000000000006,"x":41.60000000000002,"skin":"tongyong_ui/game_ui/tongyong/pai/1.png","scaleY":0.8,"scaleX":0.8,"anchorY":0.5,"anchorX":0.5}},{"type":"Image","props":{"y":58.400000000000006,"x":72.60000000000002,"skin":"tongyong_ui/game_ui/tongyong/pai/1.png","scaleY":0.8,"scaleX":0.8,"anchorY":0.5,"anchorX":0.5}},{"type":"Image","props":{"y":58.400000000000006,"x":103.60000000000002,"skin":"tongyong_ui/game_ui/tongyong/pai/1.png","scaleY":0.8,"scaleX":0.8,"anchorY":0.5,"anchorX":0.5}}]},{"type":"Image","props":{"y":81,"x":251,"skin":"ddz_ui/game_ui/doudizhu/tu_buchu.png","anchorY":0.5,"anchorX":0.5}}]};
-        constructor(){ super()}
-        createChildren():void {
-        			View.regComponent("ui.nqp.game_ui.doudizhu.component.TouXiangUI",ui.nqp.game_ui.doudizhu.component.TouXiangUI);
-
-            super.createChildren();
-            this.createView(ui.nqp.game_ui.doudizhu.component.WanJia_LUI.uiView);
-        }
-    }
-}
-
-module ui.nqp.game_ui.doudizhu.component {
-    export class WanJia_RUI extends View {
-
-        public static  uiView:any ={"type":"View","props":{"width":370,"height":180},"child":[{"type":"TouXiang","props":{"y":31,"x":250,"runtime":"ui.nqp.game_ui.doudizhu.component.TouXiangUI"}},{"type":"Image","props":{"y":17,"x":235,"skin":"ui/game_ui/zhajinhua/tu_xian.png","pivotY":0.5,"pivotX":0.5}},{"type":"Box","props":{"y":95,"x":178,"width":53,"height":73},"child":[{"type":"Image","props":{"skin":"tongyong_ui/game_ui/tongyong/pai/0.png","scaleY":0.5,"scaleX":0.5}},{"type":"Label","props":{"y":37,"x":26,"wordWrap":true,"width":46,"text":"00","overflow":"visible","leading":6,"height":42,"fontSize":36,"color":"#ffffff","anchorY":0.5,"anchorX":0.5,"align":"center"}}]},{"type":"Box","props":{"y":53,"width":285,"height":116,"centerX":-165,"anchorX":1},"child":[{"type":"Image","props":{"y":58.400000000000006,"x":181.60000000000002,"skin":"tongyong_ui/game_ui/tongyong/pai/1.png","scaleY":0.8,"scaleX":0.8,"anchorY":0.5,"anchorX":0.5}},{"type":"Image","props":{"y":58.400000000000006,"x":212.60000000000002,"skin":"tongyong_ui/game_ui/tongyong/pai/1.png","scaleY":0.8,"scaleX":0.8,"anchorY":0.5,"anchorX":0.5}},{"type":"Image","props":{"y":58.400000000000006,"x":243.60000000000002,"skin":"tongyong_ui/game_ui/tongyong/pai/1.png","scaleY":0.8,"scaleX":0.8,"anchorY":0.5,"anchorX":0.5}}]},{"type":"Image","props":{"y":79,"x":125,"skin":"ddz_ui/game_ui/doudizhu/tu_buchu.png","anchorY":0.5,"anchorX":0.5}}]};
-        constructor(){ super()}
-        createChildren():void {
-        			View.regComponent("ui.nqp.game_ui.doudizhu.component.TouXiangUI",ui.nqp.game_ui.doudizhu.component.TouXiangUI);
-
-            super.createChildren();
-            this.createView(ui.nqp.game_ui.doudizhu.component.WanJia_RUI.uiView);
-        }
-    }
-}
-
 module ui.nqp.game_ui.doudizhu {
     export class DouDiZhuUI extends View {
 		public box_tg:Laya.Box;
