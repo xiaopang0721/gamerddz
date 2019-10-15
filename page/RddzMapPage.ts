@@ -227,9 +227,6 @@ module gamerddz.page {
             this._bombNums = [0, 0, 0];
             this._chuntianType = 0;  //春天类型
             this._isCXFP = false;    //是否重新发牌 
-            //按钮切换
-            let mainUnit: Unit = this._game.sceneObjectMgr.mainUnit;
-            if (!mainUnit) return;
             if (!this._ddzStory.isCardRoomMaster()) {
                 //不是房主
                 this._viewUI.btn_back.skin = PathGameTongyong.ui_tongyong_general + "btn_fh1.png";
