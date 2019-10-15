@@ -642,6 +642,7 @@ module gamerddz.page {
                     }]);
                     this._specialIsPlaying = true;
                     this._ksyxView.ani1.play(1, false);
+                    this._game.playSound(Path_game_rddz.music_ddz + "kaishi.mp3", false);
                 }
 
             }
