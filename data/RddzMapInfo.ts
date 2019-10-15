@@ -11,6 +11,9 @@ module gamerddz.data {
 		static EVENT_DDZ_COUNT_DOWN: string = "RddzMapInfo.EVENT_DDZ_COUNT_DOWN";
 		//投票时间戳更新
 		static EVENT_PDK_TOUPIAO_TIME: string = "PaodekuaiMapInfo.EVENT_PDKTOUPIAO_TIME";
+		//投票倒计时
+		static EVENT_TOUPIAO_TIME: string = "TouPiaoMgr.EVENT_TOUPIAO_TIME";
+
 		private isFirst: boolean = false;	//只是显示详情空行用的
 
 		constructor(v: SceneObjectMgr) {
@@ -31,7 +34,7 @@ module gamerddz.data {
 				this._sceneObjectMgr.event(RddzMapInfo.EVENT_DDZ_COUNT_DOWN);
 			}
 			if (isNew || mask.GetBit(MapField.MAP_INT_TOU_PIAO_TIME)) {
-				this._sceneObjectMgr.event("TouPiaoMgr.EVENT_TOUPIAO_TIME");
+				this._sceneObjectMgr.event(RddzMapInfo.EVENT_TOUPIAO_TIME);
 			}
 		}
 
