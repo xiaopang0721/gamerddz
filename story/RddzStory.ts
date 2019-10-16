@@ -122,7 +122,9 @@ module gamerddz.story {
 					if (this._battleIndex < i) {
 						this._battleIndex = i;
 						//显示下底牌
-						this._ddzMgr.showEndCards(battleInfo.Cards)
+						this._ddzMgr.showEndCards(battleInfo.Cards);
+						let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoSimpleCard<RddzData>;
+						this._ddzMgr.diZhuSeat = info.SeatIndex;
 						if (battleInfo.SeatIndex == mainIdx) {
 							for (let k = 0; k < battleInfo.Cards.length; k++) {
 								let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
@@ -137,6 +139,11 @@ module gamerddz.story {
 									card.isShow = true;
 								}
 								this._ddzMgr.tidyCard();
+							}
+							//给主玩家得所有手牌加上地主标识
+							for(let i=0;i<this._ddzMgr.allCards.length;i++){
+								let card:RddzData = this._ddzMgr.allCards[i];
+								card.isShowJB = true;
 							}
 						}
 					}

@@ -26,6 +26,7 @@ module gamerddz.manager {
 		public allCards: any = [];	//手牌
 		public maxCardVal: number = 0;	//所选牌型最大牌值
 		public endCards: any = [];	//底牌
+		public diZhuSeat: number;
 
 		static readonly MAPINFO_OFFLINE: string = "DdzMgr.MAPINFO_OFFLINE";//假精灵
 		static readonly DEAL_CARDS: string = "DdzMgr.DEAL_CARDS";//发牌结束
@@ -981,6 +982,8 @@ module gamerddz.manager {
 				card.Init(cards[i].GetVal());
 				if (card) {
 					card.fapai();
+					//地主底牌加标识
+					// card.isShowJB = true;
 				}
 			}
 		}
@@ -1011,6 +1014,11 @@ module gamerddz.manager {
 						card._isPlaying = true;
 						card.playingcard(posX, posY);
 						this.delCard(card);
+						if (this.diZhuSeat && this.diZhuSeat == seat) {
+							card.isShowJB = true;
+						} else {
+							card.isShowJB = false;
+						}
 						this._cardsTemp[seat - 1].push(card);
 					}
 				}
@@ -1028,6 +1036,11 @@ module gamerddz.manager {
 							card.sortScore = i;
 						} else {
 							card.sortScore = -i;
+						}
+						if (this.diZhuSeat && this.diZhuSeat == seat) {
+							card.isShowJB = true;
+						} else {
+							card.isShowJB = false;
 						}
 						card.otherPlayCard();
 						this.delCard(card);
@@ -1057,6 +1070,11 @@ module gamerddz.manager {
 						card.sortScore = i;
 					} else {
 						card.sortScore = -i;
+					}
+					if (this.diZhuSeat && this.diZhuSeat == seat) {
+						card.isShowJB = true;
+					} else {
+						card.isShowJB = false;
 					}
 					card.otherPlayCard();
 				}
