@@ -23,7 +23,8 @@ module gamerddz.manager {
 	export class RddzMgr extends gamecomponent.managers.PlayingCardMgrBase<RddzData>{
 		public isReLogin: boolean;		//是否断线重连，各种判断操作用的
 		public isShowCards: boolean = false;	//是否翻牌
-		public allCards: any = [];	//手牌
+		public allCards: any = [];	//主玩家手牌
+		public otherCards: any = [];//其他玩家手牌
 		public maxCardVal: number = 0;	//所选牌型最大牌值
 		public endCards: any = [];	//底牌
 		public diZhuSeat: number;
@@ -42,6 +43,7 @@ module gamerddz.manager {
 		private _centerPlayPosTemp = [700, 625, 50];	//主玩家手牌中间那张牌的位置
 		private _playCardsPos = [[1040, 280, -22], [240, 280, 22]];	//其他人出牌第一张位置,3人场
 		private _endCardPos: any = [551, 75, 88];	//三张底牌的第一张位置
+		private _playFaPaiPos = [[181, 309], [1124, 309]];//其他人发牌位置，3人场
 
 		constructor(game: Game) {
 			super(game);
@@ -72,6 +74,20 @@ module gamerddz.manager {
 			this._reStart = b;
 		}
 
+		//重新初始化牌
+		Init(all_val: Array<number>, create_fun: Handler): void {
+			this._cards.length = 0;
+			for (let i: number = 0; i < all_val.length; i++) {
+				let card: RddzData;
+				card = create_fun.run();
+				card.Init(all_val[i]);
+				card.index = i;
+				this._cards.push(card)
+			}
+			create_fun.recover();
+			create_fun = null;
+		}
+
 		//心跳更新
 		update(diff: number) {
 			if (this._offsetTime > 0) {
@@ -80,7 +96,7 @@ module gamerddz.manager {
 			}
 			this._offsetTime = MIN_CHECKTIME;
 			//测试用的记得删掉
-			let len = this._cards.length;
+			// let len = this._cards.length;
 		}
 
 		//判断对子
@@ -894,7 +910,21 @@ module gamerddz.manager {
 			}
 		}
 
+		createObj() {
+			let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
+			card.pos = new Vector2(981, 113);
+			return card;
+		}
+
 		sort() {
+			for (let i = 0; i < this._cards.length; i++) {
+				let card = this._cards[i];
+				if (i < this._cards.length / this._totalUnitCount)
+					this.allCards.push(card);
+				else {
+					this.otherCards.push(card);
+				}
+			}
 			let mainUnit = this._game.sceneObjectMgr.mainUnit;
 			if (!mainUnit) return;
 			let idx = mainUnit.GetIndex();
@@ -928,19 +958,34 @@ module gamerddz.manager {
 
 		//发牌
 		fapai() {
-			let cardsPos = this.getCardsPosTemp(this.allCards.length, true);
-			let count = 0;
+			let cardSingleCount: number = this.allCards.length;	//一个人的手牌数
+			let cardsMainPos = this.getCardsPosTemp(cardSingleCount, true);
+			let cardsOtherPos = this._playFaPaiPos;
 			let cardIndex = 0;
-			for (let i = 0; i < this.allCards.length; i++) {
-				let card = this.allCards[i];
-				if (card) {
+			let count = 0;
+			for (let k = 0; k < this._totalUnitCount; k++) {
+				for (let i = 0; i < cardSingleCount; i++) {
 					//播音效
+					let card: RddzData;
+					let cardsPos;
+					if (k == this._totalUnitCount - 1) {
+						//最后一位给到主玩家
+						card = this.allCards[i];
+						cardsPos = cardsMainPos[i];
+					} else {
+						card = this.otherCards[i + (k * cardSingleCount)];
+						card.scaleX = 0.3;
+						card.scaleY = 0.3;
+						cardsPos = cardsOtherPos[k];
+					}
 					Laya.timer.once(50 * count, this, () => {
 						this._game.playSound(PathGameTongyong.music_tongyong + "fapai.mp3", false);
-						let posX = cardsPos[i][0];
-						let posY = cardsPos[i][1];
+						let posX = cardsPos[0];	//当前座位号的发牌位置
+						let posY = cardsPos[1];
 						card.mingpai(posX, posY);
 						cardIndex++;
+						if (cardIndex >= cardSingleCount * this._totalUnitCount)
+							this.event(RddzMgr.DEAL_CARDS);
 					});
 					count++;
 				}
@@ -960,6 +1005,19 @@ module gamerddz.manager {
 				card.size = 0.8;
 				this.endCards.push(card);
 			}
+		}
+
+		//清理其他的发牌
+		clearOtherCard(): void {
+			for (let i = 0; i < this.otherCards.length; i++) {
+				let card = this.otherCards[i];
+				if (card) {
+					this._game.sceneObjectMgr.clearOfflineObject(card);
+				}
+				this.otherCards.splice(i, 1);
+				i--
+			}
+			this.otherCards = [];
 		}
 
 		//重连发牌
@@ -1154,7 +1212,7 @@ module gamerddz.manager {
 					this._game.sceneObjectMgr.clearOfflineObject(obj);
 				}
 			})
-			this._cards = [];
+			// this._cards = [];
 		}
 
 		//清除打出去的卡牌
@@ -1174,6 +1232,7 @@ module gamerddz.manager {
 			this.isShowCards = false;
 			this.allCards = [];
 			this.endCards = [];
+			this.otherCards = [];
 			this.clearCardObject();
 		}
 	}

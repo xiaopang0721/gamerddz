@@ -88,17 +88,17 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "ksyx.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/feiji.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/huojian.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/cxfp.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsb.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsl.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/fanchun.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/px.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/qipai.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsb.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsl.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/zhadan.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/huojian.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/cxfp.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsb.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsl.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/fanchun.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/px.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/qipai.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsb.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsl.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu/effect/zhadan.atlas",
             ];
         }
 
@@ -644,6 +644,8 @@ module gamerddz.page {
 
             }
             if (state >= MAP_STATUS_DDZ.MAP_STATE_DEAL_END) {
+                //清除其他人发的牌
+                this._ddzMgr.clearOtherCard();
                 if (!this._ddzMgr.isShowCards) {
                     this._ddzMgr.showMainCards();
                 }
@@ -945,7 +947,7 @@ module gamerddz.page {
                                                 this._wangZhaWiew.ani1.play(1, false);
                                             } else {
                                                 this._viewUI.box_view.addChild(this._wangZhaWiew);
-                                                this._wangZhaWiew.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._wangZhaWiew, () => {}]);
+                                                this._wangZhaWiew.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._wangZhaWiew, () => { }]);
                                                 this.showDZJB()
                                                 this._specialIsPlaying = true;
                                                 this._wangZhaWiew.ani1.play(1, false);
@@ -956,8 +958,8 @@ module gamerddz.page {
                                                 this._bombView.ani1.play(1, false);
                                             } else {
                                                 this._viewUI.box_view.addChild(this._bombView);
-                                                this._bombView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._bombView, () => {}]);
-                                                 this.showDZJB()
+                                                this._bombView.ani1.on(LEvent.COMPLETE, this, this.onPlayAniOver, [this._bombView, () => { }]);
+                                                this.showDZJB()
                                                 this._specialIsPlaying = true;
                                                 this._bombView.ani1.play(1, false);
                                             }
@@ -1030,6 +1032,9 @@ module gamerddz.page {
                             this._battleIndex = i;
                             this._isCXFP = true;
                             this._viewUI.view_paixie.cards.visible = false;
+                            for (let k = 1; k < 3; k++) {
+                                this._viewUI["box_count" + k].visible = false;
+                            }
                             //重新发牌
                             this._viewUI.view_cxfp.visible = true;
                             this._viewUI.view_cxfp.ani1.play(0, false);
