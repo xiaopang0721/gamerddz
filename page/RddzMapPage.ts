@@ -168,6 +168,7 @@ module gamerddz.page {
             this._viewUI.btn_tuoguan.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_qxtg.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._viewUI.btn_qifu.on(LEvent.CLICK, this, this.onBtnClickWithTween);
+            this._viewUI.btn_chongzhi.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             this._game.qifuMgr.on(QiFuMgr.QIFU_FLY, this, this.qifuFly);
 
             this._game.network.addHanlder(Protocols.SMSG_OPERATION_FAILED, this, this.onOptHandler);
@@ -336,6 +337,9 @@ module gamerddz.page {
                     break;
                 case this._viewUI.btn_qifu://祈福
                     this._game.uiRoot.general.open(DatingPageDef.PAGE_QIFU);
+                    break;
+                case this._viewUI.btn_chongzhi://充值
+                    this._game.uiRoot.general.open(DatingPageDef.PAGE_CHONGZHI);
                     break;
                 default:
                     break;
@@ -2002,6 +2006,7 @@ module gamerddz.page {
 
         public close(): void {
             if (this._viewUI) {
+                this._viewUI.btn_chongzhi.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_menu.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_back.off(LEvent.CLICK, this, this.onBtnClickWithTween);
                 this._viewUI.btn_rules.off(LEvent.CLICK, this, this.onBtnClickWithTween);
