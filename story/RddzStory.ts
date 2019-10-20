@@ -92,13 +92,16 @@ module gamerddz.story {
 					this._battleIndex = i;
 					let idx = battleInfo.SeatIndex;
 					if (idx == mainIdx) {
-						this._ddzMgr.allCards = [];
-						for (let k = 0; k < battleInfo.Cards.length; k++) {
-							let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
-							card.pos = new Vector2(981, 113);
-							card.Init(battleInfo.Cards[k]);
-							this._ddzMgr.allCards.push(card);
+						this._cardsTemp = [];
+						let mainCards = this._game.sceneObjectMgr.mainPlayer.playerInfo.cards;
+						for (let k = 0; k < mainCards.length; k++) {
+							this._cardsTemp.push(mainCards[k]);
 						}
+						for (let k = 0; k < mainCards.length * (this._ddzMgr.totalUnitCount - 1); k++) {
+							this._cardsTemp.push(1);
+						}
+						let handle = new Handler(this, this._ddzMgr.createObj);
+						this._ddzMgr.Init(this._cardsTemp, handle);
 						this._ddzMgr.sort();
 						if (this._ddzMgr.isReLogin) {
 							this._ddzMgr.refapai();
@@ -122,7 +125,9 @@ module gamerddz.story {
 					if (this._battleIndex < i) {
 						this._battleIndex = i;
 						//显示下底牌
-						this._ddzMgr.showEndCards(battleInfo.Cards)
+						this._ddzMgr.showEndCards(battleInfo.Cards);
+						let info = battleInfoMgr.info[i] as gamecomponent.object.BattleInfoSimpleCard<RddzData>;
+						this._ddzMgr.diZhuSeat = info.SeatIndex;
 						if (battleInfo.SeatIndex == mainIdx) {
 							for (let k = 0; k < battleInfo.Cards.length; k++) {
 								let card = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CARD_MARK, RddzData) as RddzData;
@@ -137,6 +142,11 @@ module gamerddz.story {
 									card.isShow = true;
 								}
 								this._ddzMgr.tidyCard();
+							}
+							//给主玩家得所有手牌加上地主标识
+							for (let i = 0; i < this._ddzMgr.allCards.length; i++) {
+								let card: RddzData = this._ddzMgr.allCards[i];
+								card.isShowJB = true;
 							}
 						}
 					}
