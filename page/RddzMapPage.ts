@@ -508,6 +508,7 @@ module gamerddz.page {
                     this.updateBattledInfo();
                     this.onUpdateMapState();
                     this.updateCountDown();
+                    this._toupiaoMgr.offLineReLogin();
                 }
                 this.updateCardRoomDisplayInfo();
                 this.onUpdateUnit();
