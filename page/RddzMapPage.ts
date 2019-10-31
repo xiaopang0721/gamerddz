@@ -450,11 +450,11 @@ module gamerddz.page {
                                 viewPlayer.img_qifu.visible = true;
                                 viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
                             })
-                        } 
-                        // else {
-                        //     viewPlayer.img_qifu.visible = true;
-                        //     viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
-                        // }
+                        }
+                        else {
+                            viewPlayer.img_qifu.visible = true;
+                            viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
+                        }
                     } else {
                         viewPlayer.img_qifu.visible = false;
                         viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
