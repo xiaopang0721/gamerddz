@@ -131,6 +131,9 @@ module gamerddz.page {
         // 页面打开时执行函数
         protected onOpen(): void {
             super.onOpen();
+             //api充值不显示
+            this._viewUI.btn_chongzhi.visible = !WebConfig.enterGameLocked;
+            
             this.updateViewUI(true);
             this.onUpdateUnitOffline();
             if (this._ddzStory instanceof gamecomponent.story.StoryRoomCardBase) {
@@ -450,11 +453,11 @@ module gamerddz.page {
                                 viewPlayer.img_qifu.visible = true;
                                 viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
                             })
-                        } 
-                        // else {
-                        //     viewPlayer.img_qifu.visible = true;
-                        //     viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
-                        // }
+                        }
+                        else {
+                            viewPlayer.img_qifu.visible = true;
+                            viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
+                        }
                     } else {
                         viewPlayer.img_qifu.visible = false;
                         viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
@@ -508,6 +511,7 @@ module gamerddz.page {
                     this.updateBattledInfo();
                     this.onUpdateMapState();
                     this.updateCountDown();
+                    this._toupiaoMgr.offLineReLogin();
                 }
                 this.updateCardRoomDisplayInfo();
                 this.onUpdateUnit();
