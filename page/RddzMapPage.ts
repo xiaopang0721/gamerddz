@@ -25,7 +25,7 @@ module gamerddz.page {
         private _feijiView: ui.nqp.game_ui.doudizhu.component.Effect_feijiUI;
         private _wangZhaWiew: ui.nqp.game_ui.doudizhu.component.Effect_wzUI;
         private _bombView: ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI;
-        private _ksyxView: ui.nqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI;  //开始游戏
+        private _ksyxView: ui.ajqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI;  //开始游戏
         private _nmsbView: ui.nqp.game_ui.doudizhu.component.Effect_rmsbUI;  //农民失败
         private _nmslView: ui.nqp.game_ui.doudizhu.component.Effect_rmslUI;  //农名胜利
         private _dzsbView: ui.nqp.game_ui.doudizhu.component.Effect_dzsbUI;  //地主失败
@@ -109,7 +109,7 @@ module gamerddz.page {
             this._feijiView = new ui.nqp.game_ui.doudizhu.component.Effect_feijiUI();
             this._wangZhaWiew = new ui.nqp.game_ui.doudizhu.component.Effect_wzUI();
             this._bombView = new ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI();
-            this._ksyxView = new ui.nqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI();  //开始游戏
+            this._ksyxView = new ui.ajqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI();  //开始游戏
             this._nmsbView = new ui.nqp.game_ui.doudizhu.component.Effect_rmsbUI();  //农民失败
             this._nmslView = new ui.nqp.game_ui.doudizhu.component.Effect_rmslUI();  //农民胜利
             this._dzsbView = new ui.nqp.game_ui.doudizhu.component.Effect_dzsbUI();  //地主失败
