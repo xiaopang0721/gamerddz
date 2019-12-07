@@ -820,6 +820,7 @@ module gamerddz.page {
         update(diff: number) {
             super.update(diff);
             this._toupiaoMgr && this._toupiaoMgr.update(diff);
+            this._senceItemFlyMgr && this._senceItemFlyMgr.update(diff)
             // let cur_time: number = Laya.timer.currTimer;
             // if (this._nextUpdateTime > 0 && this._nextUpdateTime > cur_time) return;
             // this._nextUpdateTime = cur_time + 2000;
@@ -1713,27 +1714,17 @@ module gamerddz.page {
         }
 
         //金币变化 飘金币特效
+        private _senceItemFlyMgr: SenceItemFlyMgr;
         public addMoneyFly(fromPos: number, tarPos: number): void {
             if (!this._game.mainScene || !this._game.mainScene.camera) return;
-            let fromX = this._game.mainScene.camera.getScenePxByCellX(this._headPos[fromPos][0]);
-            let fromY = this._game.mainScene.camera.getScenePxByCellY(this._headPos[fromPos][1]);
-            let tarX = this._game.mainScene.camera.getScenePxByCellX(this._headPos[tarPos][0]);
-            let tarY = this._game.mainScene.camera.getScenePxByCellY(this._headPos[tarPos][1]);
-            for (let i: number = 0; i < MONEY_NUM; i++) {
-                let posBeginX = MathU.randomRange(fromX + 23, fromX + 70);
-                let posBeginY = MathU.randomRange(fromY + 23, fromY + 70);
-                let posEndX = MathU.randomRange(tarX + 23, tarX + 65);
-                let posEndY = MathU.randomRange(tarY + 23, tarY + 65);
-                let moneyImg: LImage = new LImage(PathGameTongyong.ui_tongyong_general + "icon_money.png");
-                moneyImg.scale(0.7, 0.7);
-                if (!moneyImg.parent) this._viewUI.addChild(moneyImg);
-                moneyImg.pos(posBeginX, posBeginY);
-                // Laya.Bezier 贝塞尔曲线  取得点
-                Laya.Tween.to(moneyImg, { x: posEndX }, i * MONEY_FLY_TIME, null);
-                Laya.Tween.to(moneyImg, { y: posEndY }, i * MONEY_FLY_TIME, null, Handler.create(this, () => {
-                    moneyImg.removeSelf();
-                }));
+            let fromX = this._headPos[fromPos][0];
+            let fromY = this._headPos[fromPos][1];
+            let tarX = this._headPos[tarPos][0];
+            let tarY = this._headPos[tarPos][1];
+            if (!this._senceItemFlyMgr) {
+                this._senceItemFlyMgr = new SenceItemFlyMgr(this._game);
             }
+            this._senceItemFlyMgr.init(fromX, fromY, tarX, tarY);
         }
 
         //倍数显示
