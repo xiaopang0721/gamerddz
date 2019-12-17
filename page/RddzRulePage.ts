@@ -10,7 +10,7 @@ module gamerddz.page {
 		TYPE_POINT = 4,
 	}
 	export class RddzRulePage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhu_GuiZeUI;
+		private _viewUI: ui.ajqp.game_ui.doudizhu.DouDiZhu_GuiZeUI;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);

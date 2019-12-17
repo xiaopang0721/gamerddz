@@ -3,7 +3,7 @@
 */
 module gamerddz.page {
     export class RddzRoomSettlePage extends game.gui.base.Page {
-        private _viewUI: ui.nqp.game_ui.doudizhu.JieSuan_FangKaUI;
+        private _viewUI: ui.ajqp.game_ui.doudizhu.JieSuan_FangKaUI;
         private _isGameEnd: boolean = false;  //是否结束
 
         constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
@@ -12,6 +12,7 @@ module gamerddz.page {
             this._isClickBlack = false;
             this._asset = [
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "js.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
             ];
         }
@@ -105,7 +106,7 @@ module gamerddz.page {
         }
     }
 
-    class ListRecordItem extends ui.nqp.game_ui.doudizhu.component.JieSuanRender2_ddzUI {
+    class ListRecordItem extends ui.ajqp.game_ui.doudizhu.component.JieSuanRender2_ddzUI {
         private _game: Game;
         private _data: any;
         setData(game: Game, data: any) {

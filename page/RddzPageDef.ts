@@ -6,50 +6,46 @@ module gamerddz.page {
 		static GAME_NAME: string;
 		//界面
 		static PAGE_DDZ_MAP: string = "2";		//地图界面
-		static PAGE_DDZ_RULE: string = "101";		//规则界面
-		static PAGE_DDZ_CREATE_CARDROOM: string = "8";	// 创建房间
 		static PAGE_DDZ_CARDROOM_SETTLE: string = "10";	// 房卡结算页
-		static PAGE_DDZ_JOIN_CARDROOM: string = "100";		// 加入房间
+		static PAGE_DDZ_RULE: string = "101";		//规则界面
 		static myinit(str: string) {
 			super.myinit(str);
 			DdzClip.init();
 			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_MAP] = RddzMapPage;
 			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_RULE] = RddzRulePage;
-			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_CREATE_CARDROOM] = RddzCreadRoomPage;
-			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_JOIN_CARDROOM] = RddzJoinRoomPage;
 			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_CARDROOM_SETTLE] = RddzRoomSettlePage;
 
 
 			this["__needLoadAsset"] = [
 				DatingPath.atlas_dating_ui + "qifu.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/feiji.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/huojian.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/cxfp.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsb.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsl.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/fanchun.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/px.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/qipai.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsb.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsl.atlas",
-				Path_game_rddz.atlas_game_ui + "doudizhu/effect/zhadan.atlas",
-
-
-				PathGameTongyong.atlas_game_ui_tongyong + "jiaru.atlas",
+                Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "feiji.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "huojian.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "cxfp.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "dzsb.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "dzsl.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "fanchun.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "jiesuan.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "px.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "qipai.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "rmsb.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "rmsl.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "zhadan.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "nyl.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "ksyx.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
-				PathGameTongyong.atlas_game_ui_tongyong + "ksyx.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
+
 				Path.custom_atlas_scene + 'card.atlas',
 				Path.map + 'pz_rddz.png',
 				Path.map_far + 'bg_rddz.jpg'

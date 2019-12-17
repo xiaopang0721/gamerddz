@@ -21,17 +21,17 @@ module gamerddz.page {
     const MONEY_FLY_TIME = 50; // 金币飞行时间间隔
     const MAX_COUNT = 3;  //最大人数
     export class RddzMapPage extends game.gui.base.Page {
-        private _viewUI: ui.nqp.game_ui.doudizhu.DouDiZhuUI;
-        private _feijiView: ui.nqp.game_ui.doudizhu.component.Effect_feijiUI;
-        private _wangZhaWiew: ui.nqp.game_ui.doudizhu.component.Effect_wzUI;
-        private _bombView: ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI;
+        private _viewUI: ui.ajqp.game_ui.doudizhu.DouDiZhuUI;
+        private _feijiView: ui.ajqp.game_ui.doudizhu.component.Effect_feijiUI;
+        private _wangZhaWiew: ui.ajqp.game_ui.doudizhu.component.Effect_wzUI;
+        private _bombView: ui.ajqp.game_ui.doudizhu.component.Effect_zhadanUI;
         private _ksyxView: ui.ajqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI;  //开始游戏
-        private _nmsbView: ui.nqp.game_ui.doudizhu.component.Effect_rmsbUI;  //农民失败
-        private _nmslView: ui.nqp.game_ui.doudizhu.component.Effect_rmslUI;  //农名胜利
-        private _dzsbView: ui.nqp.game_ui.doudizhu.component.Effect_dzsbUI;  //地主失败
-        private _dzslView: ui.nqp.game_ui.doudizhu.component.Effect_dzslUI;  //地主胜利
-        private _fctView: ui.nqp.game_ui.doudizhu.component.Effect_fctUI;  //反春天
-        private _ctView: ui.nqp.game_ui.doudizhu.component.Effect_chuntianUI;  //春天
+        private _nmsbView: ui.ajqp.game_ui.doudizhu.component.Effect_rmsbUI;  //农民失败
+        private _nmslView: ui.ajqp.game_ui.doudizhu.component.Effect_rmslUI;  //农名胜利
+        private _dzsbView: ui.ajqp.game_ui.doudizhu.component.Effect_dzsbUI;  //地主失败
+        private _dzslView: ui.ajqp.game_ui.doudizhu.component.Effect_dzslUI;  //地主胜利
+        private _fctView: ui.ajqp.game_ui.doudizhu.component.Effect_fctUI;  //反春天
+        private _ctView: ui.ajqp.game_ui.doudizhu.component.Effect_chuntianUI;  //春天
 
         private _mapInfo: RddzMapInfo;
         private _ddzMgr: RddzMgr;
@@ -77,8 +77,20 @@ module gamerddz.page {
             this._isNeedDuang = false;
             this._asset = [
                 DatingPath.atlas_dating_ui + "qifu.atlas",
-                PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "feiji.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "huojian.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "cxfp.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "dzsb.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "dzsl.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "fanchun.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "jiesuan.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "px.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "qipai.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "rmsb.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "rmsl.atlas",
+                Path_game_rddz.atlas_game_ui_ddz_effect + "zhadan.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
@@ -86,20 +98,12 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/fapai_1.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/xipai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "nyl.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "ksyx.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/feiji.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/huojian.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/cxfp.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsb.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/dzsl.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/fanchun.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/jiesuan.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/px.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/qipai.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsb.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/rmsl.atlas",
-                Path_game_rddz.atlas_game_ui + "doudizhu/effect/zhadan.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
             ];
         }
 
@@ -107,16 +111,16 @@ module gamerddz.page {
         protected init(): void {
             this._viewUI = this.createView('game_ui.doudizhu.DouDiZhuUI');
             this.addChild(this._viewUI);
-            this._feijiView = new ui.nqp.game_ui.doudizhu.component.Effect_feijiUI();
-            this._wangZhaWiew = new ui.nqp.game_ui.doudizhu.component.Effect_wzUI();
-            this._bombView = new ui.nqp.game_ui.doudizhu.component.Effect_zhadanUI();
+            this._feijiView = new ui.ajqp.game_ui.doudizhu.component.Effect_feijiUI();
+            this._wangZhaWiew = new ui.ajqp.game_ui.doudizhu.component.Effect_wzUI();
+            this._bombView = new ui.ajqp.game_ui.doudizhu.component.Effect_zhadanUI();
             this._ksyxView = new ui.ajqp.game_ui.tongyong.effect.Effect_kaishiyouxiUI();  //开始游戏
-            this._nmsbView = new ui.nqp.game_ui.doudizhu.component.Effect_rmsbUI();  //农民失败
-            this._nmslView = new ui.nqp.game_ui.doudizhu.component.Effect_rmslUI();  //农民胜利
-            this._dzsbView = new ui.nqp.game_ui.doudizhu.component.Effect_dzsbUI();  //地主失败
-            this._dzslView = new ui.nqp.game_ui.doudizhu.component.Effect_dzslUI();  //地主胜利
-            this._fctView = new ui.nqp.game_ui.doudizhu.component.Effect_fctUI();  //反春天
-            this._ctView = new ui.nqp.game_ui.doudizhu.component.Effect_chuntianUI();  //反春天
+            this._nmsbView = new ui.ajqp.game_ui.doudizhu.component.Effect_rmsbUI();  //农民失败
+            this._nmslView = new ui.ajqp.game_ui.doudizhu.component.Effect_rmslUI();  //农民胜利
+            this._dzsbView = new ui.ajqp.game_ui.doudizhu.component.Effect_dzsbUI();  //地主失败
+            this._dzslView = new ui.ajqp.game_ui.doudizhu.component.Effect_dzslUI();  //地主胜利
+            this._fctView = new ui.ajqp.game_ui.doudizhu.component.Effect_fctUI();  //反春天
+            this._ctView = new ui.ajqp.game_ui.doudizhu.component.Effect_chuntianUI();  //反春天
             this._pageHandle = PageHandle.Get("DdzMapPage");//额外界面控制器
             if (!this._ddzMgr) {
                 if (this._game.sceneObjectMgr.story instanceof RddzStory) {
@@ -260,8 +264,7 @@ module gamerddz.page {
         protected onBtnTweenEnd(e: LEvent, target: any) {
             switch (target) {
                 case this._viewUI.btn_menu:
-                    this._viewUI.img_menu.visible = true;
-                    this._viewUI.btn_menu.visible = false;
+                    this.menuTween(!this._viewUI.img_menu.visible);
                     break;
                 case this._viewUI.btn_back:
                     if (this._viewUI.btn_back.tag == 1) {
@@ -363,9 +366,22 @@ module gamerddz.page {
 
         //点击任意地方关闭菜单
         protected onMouseClick(e: LEvent) {
-            if (e.currentTarget != this._viewUI.btn_menu) {
-                this._viewUI.img_menu.visible = false;
-                this._viewUI.btn_menu.visible = true;
+            if (e.target != this._viewUI.btn_menu) {
+                this.menuTween(false);
+            }
+        }
+
+        //菜单栏
+        private menuTween(isOpen: boolean) {
+            if (isOpen) {
+                this._viewUI.img_menu.visible = true;
+                this._viewUI.img_menu.scale(0.2, 0.2);
+                this._viewUI.img_menu.alpha = 0;
+                Laya.Tween.to(this._viewUI.img_menu, { scaleX: 1, scaleY: 1, alpha: 1 }, 300, Laya.Ease.backInOut);
+            } else {
+                Laya.Tween.to(this._viewUI.img_menu, { scaleX: 0.2, scaleY: 0.2, alpha: 0 }, 300, Laya.Ease.backInOut, Handler.create(this, () => {
+                    this._viewUI.img_menu.visible = false;
+                }));
             }
         }
 
@@ -415,7 +431,7 @@ module gamerddz.page {
             for (let index = 0; index < MAX_COUNT; index++) {
                 let posIdx = this.GetSeatFromUiPos(index);
                 let unit = this._game.sceneObjectMgr.getUnitByIdx(posIdx);
-                let viewPlayer: ui.nqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
+                let viewPlayer: ui.ajqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
                 viewPlayer.visible = unit;
                 if (unit) {
                     let name = getMainPlayerName(unit.GetName());
@@ -1755,7 +1771,7 @@ module gamerddz.page {
             let idx = mainUnit.GetIndex();
             if (!idx) return;
             let index = (pos - idx + MAX_COUNT) % MAX_COUNT;
-            let viewPlayer: ui.nqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
+            let viewPlayer: ui.ajqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
             if (!viewPlayer) return;
             viewPlayer.box_money.visible = true;
             let valueClip: DdzClip;
@@ -1777,7 +1793,7 @@ module gamerddz.page {
             viewPlayer.ani1.on(LEvent.COMPLETE, this, this.onClipComplete, [viewPlayer, valueClip]);
         }
 
-        private onClipComplete(viewPlayer: ui.nqp.game_ui.doudizhu.component.TouXiangUI, valueClip: ClipUtil): void {
+        private onClipComplete(viewPlayer: ui.ajqp.game_ui.doudizhu.component.TouXiangUI, valueClip: ClipUtil): void {
             if (viewPlayer) {
                 viewPlayer.box_money.visible = false;
                 viewPlayer.ani1.off(LEvent.COMPLETE, this, this.onClipComplete);
