@@ -183,6 +183,24 @@ module gamerddz.page {
             this.setCardRoomBtnEvent(true);
         }
 
+        protected layout(): void {
+            super.layout();
+            if (this._viewUI) {
+                //全面屏
+                if (this._game.isFullScreen) {
+                    this._viewUI.box_top_left.left = 14 + 56;
+                    this._viewUI.box_room_left.left = 105 + 56;
+                    this._viewUI.box_top_right.right = 28 + 56;
+                    this._viewUI.box_bottom_right.right = 12 + 56;
+                } else {
+                    this._viewUI.box_top_left.left = 14;
+                    this._viewUI.box_room_left.left = 105;
+                    this._viewUI.box_top_right.right = 28;
+                    this._viewUI.box_bottom_right.right = 12;
+                }
+            }
+        }
+
         private onWashCardOver(): void {
             if (!this._isPlayXiPai) return;
             Laya.Tween.to(this._viewUI.view_xipai, { x: 981, y: 113, alpha: 0, rotation: -30, scaleX: 0.35, scaleY: 0.35 }, 500);
