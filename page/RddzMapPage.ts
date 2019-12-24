@@ -481,21 +481,20 @@ module gamerddz.page {
                         viewPlayer.qifu_type.skin = this._qifuTypeImgUrl;
                         this.playTween(viewPlayer.qifu_type, qifu_index);
                     }
-                    //时间戳变化 才加上祈福标志
-                    if (this._game.datingGame.getIsHaveQiFu(unit)) {
-                        if (qifu_index && posIdx == qifu_index) {
-                            Laya.timer.once(2500, this, () => {
-                                viewPlayer.img_qifu.visible = true;
-                                viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
-                            })
-                        }
-                        else {
+                    //祈福成功 头像上就有动画
+                    if (qifu_index && posIdx == qifu_index) {
+                        viewPlayer.qifu_type.visible = true;
+                        viewPlayer.qifu_type.skin = this._qifuTypeImgUrl;
+                        //时间戳变化 才加上祈福标志
+                        this.playTween(viewPlayer.qifu_type, qifu_index);
+                        Laya.timer.once(2500, this, () => {
                             viewPlayer.img_qifu.visible = true;
-                            viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
-                        }
-                    } else {
-                        viewPlayer.img_qifu.visible = false;
-                        viewPlayer.img_head.skin = this._game.datingGame.getHeadUrl(unit.GetHeadImg(), 2);
+                            viewPlayer.img_head.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
+                        })
+                    }
+                    else {
+                        viewPlayer.img_qifu.visible = TongyongUtil.getIsHaveQiFu(unit, this._game.sync.serverTimeBys);
+                        viewPlayer.img_head.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                     }
                 }
             }
