@@ -6,4 +6,4 @@ import RddzPageDef = gamerddz.page.RddzPageDef;
 import RddzData = gamerddz.data.RddzData
 //
 import Path_game_rddz = gamerddz.data.Path;
-import DdzClip = gamerddz.ClipUtil;
+import RddzClip = gamerddz.ClipUtil;

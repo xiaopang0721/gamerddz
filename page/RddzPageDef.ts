@@ -10,7 +10,7 @@ module gamerddz.page {
 		static PAGE_DDZ_RULE: string = "101";		//规则界面
 		static myinit(str: string) {
 			super.myinit(str);
-			DdzClip.init();
+			RddzClip.init();
 			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_MAP] = RddzMapPage;
 			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_RULE] = RddzRulePage;
 			PageDef._pageClassMap[RddzPageDef.PAGE_DDZ_CARDROOM_SETTLE] = RddzRoomSettlePage;

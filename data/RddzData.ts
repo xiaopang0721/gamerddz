@@ -57,6 +57,20 @@ module gamerddz.data {
 			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, this.time_interval);
 		}
 
+		jiamingpai(posX, posY, isSort?) {	//其他玩家假的手牌
+			if (!this.targe_pos) {
+				this.targe_pos = new Vector2();
+			}
+			this.toggleEnable = true;
+			this.targe_pos.x = posX;
+			this.targe_pos.y = posY;
+			this.time_interval = 200;
+			this.isFinalPos = false;
+			Laya.Tween.to(this, { size: 0.45 }, this.time_interval);
+			if (!this.pos) return;
+			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, this.time_interval);
+		}
+
 		playingcard(posX, posY) {	//自己打出去的牌
 			this.size = 0.7;
 			if (!this.targe_pos) {

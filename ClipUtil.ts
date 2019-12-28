@@ -24,22 +24,22 @@ module gamerddz {
 
             //加钱飘字
             this.ADD_MONEY_FONT = {
-                source: PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
-                url: PathGameTongyong.ui_tongyong_fk + 'clip_+123.png',
-                clipWidth: 33,
-                clipHeight: 51,
-                clipX: 10,
-                space: -10
+                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                url: PathGameTongyong.ui_tongyong_general + 'clip_num1.png',
+                clipWidth: 28,
+                clipHeight: 32,
+                clipX: 11,
+                space: 0
             };
 
             //扣钱飘字
             this.SUB_MONEY_FONT = {
-                source: PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
-                url: PathGameTongyong.ui_tongyong_fk + 'clip_-123.png',
-                clipWidth: 33,
-                clipHeight: 51,
-                clipX: 10,
-                space: -10
+                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                url: PathGameTongyong.ui_tongyong_general + 'clip_num.png',
+                clipWidth: 28,
+                clipHeight: 32,
+                clipX: 11,
+                space: 0
             };
 
             //斗地主倍数

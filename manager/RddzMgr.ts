@@ -40,10 +40,10 @@ module gamerddz.manager {
 		private _reStart: boolean = false;//是否重开游戏
 		private _totalUnitCount: number = 3;	// 玩家数量
 		private _centerPosTemp = [640, 450, 36];	//主玩家出牌中间那张牌的位置
-		private _centerPlayPosTemp = [700, 625, 50];	//主玩家手牌中间那张牌的位置
+		private _centerPlayPosTemp = [670, 625, 47];	//主玩家手牌中间那张牌的位置
 		private _playCardsPos = [[1040, 280, -22], [240, 280, 22]];	//其他人出牌第一张位置,3人场
 		private _endCardPos: any = [551, 75, 88];	//三张底牌的第一张位置
-		private _playFaPaiPos = [[181, 309], [1124, 309]];//其他人发牌位置，3人场
+		private _playFaPaiPos = [[171, 297], [1115, 297]];//其他人发牌位置，3人场
 
 		constructor(game: Game) {
 			super(game);
@@ -962,8 +962,8 @@ module gamerddz.manager {
 			let cardsMainPos = this.getCardsPosTemp(cardSingleCount, true);
 			let cardsOtherPos = this._playFaPaiPos;
 			let cardIndex = 0;
-			let count = 0;
 			for (let k = 0; k < this._totalUnitCount; k++) {
+				let count = 0;
 				for (let i = 0; i < cardSingleCount; i++) {
 					//播音效
 					let card: RddzData;
@@ -974,15 +974,18 @@ module gamerddz.manager {
 						cardsPos = cardsMainPos[i];
 					} else {
 						card = this.otherCards[i + (k * cardSingleCount)];
-						card.scaleX = 0.3;
-						card.scaleY = 0.3;
+						card.size = 0.2;
 						cardsPos = cardsOtherPos[k];
 					}
-					Laya.timer.once(50 * count, this, () => {
+					Laya.timer.once(58 * count, this, () => {
 						this._game.playSound(PathGameTongyong.music_tongyong + "fapai.mp3", false);
 						let posX = cardsPos[0];	//当前座位号的发牌位置
 						let posY = cardsPos[1];
-						card.mingpai(posX, posY);
+						if (k == this._totalUnitCount - 1) {
+							card.mingpai(posX, posY);
+						} else {
+							card.jiamingpai(posX, posY);
+						}
 						cardIndex++;
 						if (cardIndex >= cardSingleCount * this._totalUnitCount)
 							this.event(RddzMgr.DEAL_CARDS);

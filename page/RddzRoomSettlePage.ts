@@ -61,8 +61,9 @@ module gamerddz.page {
         private setGameEndBtnState(isEventOn) {
             this._viewUI.box_jx_info.visible = !this._isGameEnd;
             this._viewUI.btn_create_room.visible = this._viewUI.box_js_info.visible = this._isGameEnd;
-            let str = StringU.substitute("本轮游戏已满{0}局...", HtmlFormat.addHtmlColor(this.dataSource[0], TeaStyle.COLOR_YELLOW));
-            TextFieldU.setHtmlText(this._viewUI.lb_js, str);
+            // let str = StringU.substitute("本轮游戏已满{0}局...", HtmlFormat.addHtmlColor(this.dataSource[0], TeaStyle.COLOR_YELLOW));
+            this._viewUI.lb_js.text = StringU.substitute("本轮游戏已满{0}局", this.dataSource[0]);
+            // TextFieldU.setHtmlText(this._viewUI.lb_js, str, false);
             this._viewUI.btn_tc.visible = this._isGameEnd;
             if (isEventOn) {
                 this._viewUI.btn_create_room.on(LEvent.CLICK, this, this.onBtnClickWithTween);
@@ -91,8 +92,9 @@ module gamerddz.page {
                 let curTime = this._game.sync.serverTimeBys;
                 let time = Math.floor(this._endTime - curTime) + 1;
                 if (time > 0) {
-                    let str = StringU.substitute("{0}后开始{1}{2}局...", HtmlFormat.addHtmlColor(time + "s", TeaStyle.COLOR_YELLOW), HtmlFormat.addHtmlColor(this.dataSource[0] + "/", TeaStyle.COLOR_YELLOW), HtmlFormat.addHtmlColor(this.dataSource[1], TeaStyle.COLOR_YELLOW));
-                    TextFieldU.setHtmlText(this._viewUI.lab_xinxi, str);
+                    // let str = StringU.substitute("{0}后开始{1}{2}局...", HtmlFormat.addHtmlColor(time + "s", TeaStyle.COLOR_YELLOW), HtmlFormat.addHtmlColor(this.dataSource[0] + "/", TeaStyle.COLOR_YELLOW), HtmlFormat.addHtmlColor(this.dataSource[1], TeaStyle.COLOR_YELLOW));
+                    this._viewUI.lab_xinxi.text = StringU.substitute("{0}后开始{1}/{2}局", time, this.dataSource[0], this.dataSource[1]);
+                    // TextFieldU.setHtmlText(this._viewUI.lab_xinxi, str, false);
                 } else {
                     // 最后一局不自动关闭
                     this.close();

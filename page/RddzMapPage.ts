@@ -40,7 +40,8 @@ module gamerddz.page {
         private _curStatus: number; //当前地图状态
         private _countDown: number; //倒计时结束时间
         private _mainIdx: number;   //主玩家座位号
-        private _clipList: Array<{}> = [];//飘字
+        private _clipList: Array<RddzClip> = [];//飘字
+        private _imgdiList: Array<LImage> = [];//飘字
         private _winerPos: any = [];  //赢家
         private _settleLoseInfo: any = [];  //结算信息，闲家输
         private _moneyImg: any = [];    //飘金币里的金币
@@ -59,7 +60,7 @@ module gamerddz.page {
         private _isPlayXiPai: boolean = false;  //是否播放洗牌
         private _totalMul: number = 0;  //倍数
         private _diZhuSeat: number = 0; //地主
-        private _multipleClip: DdzClip;    //倍数显示
+        private _multipleClip: RddzClip;    //倍数显示
         private _promptHitCount: number = 0;    //提示按钮点击次数
         private _playCardsConfig: any = {    //当前打出去的牌
             "player": 0,            //出牌座位
@@ -120,7 +121,7 @@ module gamerddz.page {
             this._dzsbView = new ui.ajqp.game_ui.doudizhu.component.Effect_dzsbUI();  //地主失败
             this._dzslView = new ui.ajqp.game_ui.doudizhu.component.Effect_dzslUI();  //地主胜利
             this._fctView = new ui.ajqp.game_ui.doudizhu.component.Effect_fctUI();  //反春天
-            this._ctView = new ui.ajqp.game_ui.doudizhu.component.Effect_chuntianUI();  //反春天
+            this._ctView = new ui.ajqp.game_ui.doudizhu.component.Effect_chuntianUI();  //春天
             this._pageHandle = PageHandle.Get("DdzMapPage");//额外界面控制器
             if (!this._ddzMgr) {
                 if (this._game.sceneObjectMgr.story instanceof RddzStory) {
@@ -136,9 +137,9 @@ module gamerddz.page {
         // 页面打开时执行函数
         protected onOpen(): void {
             super.onOpen();
-             //api充值不显示
+            //api充值不显示
             this._viewUI.btn_chongzhi.visible = !WebConfig.enterGameLocked;
-            
+
             this.updateViewUI(true);
             this.onUpdateUnitOffline();
             if (this._ddzStory instanceof gamecomponent.story.StoryRoomCardBase) {
@@ -251,6 +252,7 @@ module gamerddz.page {
             this._viewUI.btn_qxtg.visible = false;
             this._viewUI.tg_info.visible = false;
             this._viewUI.text_qz_info.visible = false;
+            this._viewUI.box_room_left.visible = false;
             this._bombNums = [0, 0, 0];
             this._chuntianType = 0;  //春天类型
             this._isCXFP = false;    //是否重新发牌 
@@ -267,7 +269,6 @@ module gamerddz.page {
                 if (isInit) this._viewUI["view_player" + i].visible = false;
                 this._viewUI["view_player" + i].img_dizhu.visible = false;
                 this._viewUI["view_player" + i].img_tuoguan.visible = false;
-                this._viewUI["view_player" + i].box_money.visible = false;
                 this._viewUI["img_tishi" + i].visible = false;
                 this._viewUI["img_type" + i].visible = false;
                 if (i > 0) {
@@ -642,6 +643,7 @@ module gamerddz.page {
             this._curStatus = this._mapInfo.GetMapState();
             let betPos = this._mapInfo.GetCurrentBetPos();
             let state = this._mapInfo.GetMapState();
+            this._viewUI.box_room_left.visible = true;
             this._viewUI.txt_roomno.text = "牌局号：" + this._mapInfo.GetGameNo();
             let round = this._mapInfo.GetRound() + 1;
             let posIdx = (betPos - mainIdx + MAX_COUNT) % MAX_COUNT;
@@ -1011,6 +1013,12 @@ module gamerddz.page {
                                         this._bombNums[posIdx]++;
                                     }
                                 }
+                                //没有13这个牌型动画，11-12统一用飞机11，13用飞机带翅膀12
+                                if (type == 13) {
+                                    type = 12;
+                                } else if (type == 12) {
+                                    type = 11;
+                                }
                                 this._viewUI["img_type" + posIdx].visible = true;
                                 this._viewUI["img_type" + posIdx].img_px1.skin = Path_game_rddz.ui_ddz + "effect/px/px_" + type + ".png";
                                 this._viewUI["img_type" + posIdx].img_px2.skin = Path_game_rddz.ui_ddz + "effect/px/pxh_" + type + ".png";
@@ -1086,6 +1094,7 @@ module gamerddz.page {
                                 this._pageHandle.pushClose({ id: RddzPageDef.PAGE_DDZ_CARDROOM_SETTLE, parent: this._game.uiRoot.HUD });
                                 this.playDealAni();
                             }]);
+                            this._viewUI.view_bet.visible = false;
                         }
                         break;
                     }
@@ -1160,6 +1169,7 @@ module gamerddz.page {
                                     if (this._diZhuSeat == mainIdx) {
                                         let num = Number(this._multipleClip.clip._num);
                                         if (multiple * 2 != num) {
+                                            this._viewUI.view_bet.visible = true;
                                             this._viewUI.view_bet.ani1.play(0, false);
                                             this._viewUI.view_bet.ani1.on(LEvent.COMPLETE, this, this.betClipAniOver, [() => {
                                                 this._multipleClip.setText((multiple * 2) + "", true, false);
@@ -1751,10 +1761,10 @@ module gamerddz.page {
         private _senceItemFlyMgr: SenceItemFlyMgr;
         public addMoneyFly(fromPos: number, tarPos: number): void {
             if (!this._game.mainScene || !this._game.mainScene.camera) return;
-            let fromX = this._headPos[fromPos][0];
-            let fromY = this._headPos[fromPos][1];
-            let tarX = this._headPos[tarPos][0];
-            let tarY = this._headPos[tarPos][1];
+            let fromX = this._headPos[fromPos][0] + this._headPos[fromPos].width / 2;
+            let fromY = this._headPos[fromPos][1] + this._headPos[fromPos].height / 2;
+            let tarX = this._headPos[tarPos][0] + this._headPos[tarPos].width / 2;
+            let tarY = this._headPos[tarPos][1] + this._headPos[tarPos].height / 2;
             if (!this._senceItemFlyMgr) {
                 this._senceItemFlyMgr = new SenceItemFlyMgr(this._game);
             }
@@ -1763,7 +1773,7 @@ module gamerddz.page {
 
         //倍数显示
         private showMultiple(): void {
-            this._multipleClip = new DdzClip(DdzClip.DDZ_BEISHU);
+            this._multipleClip = new RddzClip(RddzClip.DDZ_BEISHU);
             let multiple: number = this._totalMul == 0 ? 1 : this._totalMul;
             this._multipleClip.centerX = this._viewUI.view_bet.clip_num.centerX;
             this._multipleClip.centerY = this._viewUI.view_bet.clip_num.centerY;
@@ -1788,46 +1798,53 @@ module gamerddz.page {
             let idx = mainUnit.GetIndex();
             if (!idx) return;
             let index = (pos - idx + MAX_COUNT) % MAX_COUNT;
-            let viewPlayer: ui.ajqp.game_ui.doudizhu.component.TouXiangUI = this._viewUI["view_player" + index];
-            if (!viewPlayer) return;
-            viewPlayer.box_money.visible = true;
-            let valueClip: DdzClip;
-            if (value > 0) valueClip = new DdzClip(DdzClip.ADD_MONEY_FONT)
-            else valueClip = new DdzClip(DdzClip.SUB_MONEY_FONT)
-            this._clipList.push(valueClip);
-            viewPlayer.clip_num.visible = false
-            valueClip.centerX = viewPlayer.clip_num.centerX;
-            valueClip.centerY = viewPlayer.clip_num.centerY;
-            viewPlayer.clip_num.parent.addChild(valueClip);
-
-            let preSkin = value >= 0 ? PathGameTongyong.ui_tongyong_fk + "tu_+.png" : PathGameTongyong.ui_tongyong_fk + "tu_-.png";   //符号
-            let imgBgSkin = value >= 0 ? PathGameTongyong.ui_tongyong_fk + "tu_jiafd.png" : PathGameTongyong.ui_tongyong_fk + "tu_jianfd.png";   //背景图
-            let moneyStr = EnumToString.getPointBackNum(Math.abs(value), 2);
-            valueClip.setText(moneyStr + "", true, false, preSkin);
-            viewPlayer.box_money.visible = true;
-            viewPlayer.img_bg.skin = imgBgSkin;
-            viewPlayer.ani1.play(0, false);
-            viewPlayer.ani1.on(LEvent.COMPLETE, this, this.onClipComplete, [viewPlayer, valueClip]);
-        }
-
-        private onClipComplete(viewPlayer: ui.ajqp.game_ui.doudizhu.component.TouXiangUI, valueClip: ClipUtil): void {
-            if (viewPlayer) {
-                viewPlayer.box_money.visible = false;
-                viewPlayer.ani1.off(LEvent.COMPLETE, this, this.onClipComplete);
-            }
-            valueClip.removeSelf();
+            let playerIcon = this._viewUI["view_player" + index];
+            if (!playerIcon) return;
+            let clip_money = value >= 0 ? new RddzClip(RddzClip.ADD_MONEY_FONT) : new RddzClip(RddzClip.SUB_MONEY_FONT);
+            let preSkin = value >= 0 ? PathGameTongyong.ui_tongyong_general + "tu_jia.png" : PathGameTongyong.ui_tongyong_general + "tu_jian.png";
+            let img_di = value >= 0 ? new LImage(PathGameTongyong.ui_tongyong_general + "tu_yingqian.png") : new LImage(PathGameTongyong.ui_tongyong_general + "tu_shuqian.png");
+            //飘字底
+            img_di.centerX = playerIcon.img_di.centerX;
+            img_di.centerY = playerIcon.img_di.centerY;
+            playerIcon.img_di.parent.addChild(img_di);
+            this._imgdiList.push(img_di);
+            playerIcon.img_di.visible = false;
+            //飘字
+            clip_money.setText(Math.abs(value), true, false, preSkin);
+            clip_money.centerX = playerIcon.clip_money.centerX - 4;
+            clip_money.centerY = playerIcon.clip_money.centerY;
+            playerIcon.clip_money.parent.addChild(clip_money);
+            this._clipList.push(clip_money);
+            playerIcon.clip_money.visible = false;
+            //飘字box缓动
+            playerIcon.img_zd.visible = false;
+            playerIcon.box_clip.y = 57;
+            playerIcon.box_clip.visible = true;
+            Laya.Tween.clearAll(playerIcon.box_clip);
+            Laya.Tween.to(playerIcon.box_clip, { y: playerIcon.box_clip.y - 55 }, 700);
         }
 
         //清理飘钱动画
         private clearClip(): void {
             if (this._clipList && this._clipList.length) {
                 for (let i: number = 0; i < this._clipList.length; i++) {
-                    let clip: any = this._clipList[i];
+                    let clip = this._clipList[i];
                     clip.removeSelf();
+                    clip.destroy(true);
                     clip = null;
                 }
             }
             this._clipList = [];
+
+            if (this._imgdiList && this._imgdiList.length) {
+                for (let j: number = 0; j < this._imgdiList.length; j++) {
+                    let imgdi = this._imgdiList[j];
+                    imgdi.removeSelf();
+                    imgdi.destroy(true);
+                    imgdi = null;
+                }
+            }
+            this._imgdiList = [];
         }
 
         //清理金币
