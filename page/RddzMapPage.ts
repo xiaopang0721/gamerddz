@@ -190,12 +190,12 @@ module gamerddz.page {
                 //全面屏
                 if (this._game.isFullScreen) {
                     this._viewUI.box_top_left.left = 14 + 56;
-                    this._viewUI.box_room_left.left = 105 + 56;
+                    this._viewUI.box_room_left.left = 115 + 56;
                     this._viewUI.box_top_right.right = 28 + 56;
                     this._viewUI.box_bottom_right.right = 12 + 56;
                 } else {
                     this._viewUI.box_top_left.left = 14;
-                    this._viewUI.box_room_left.left = 105;
+                    this._viewUI.box_room_left.left = 115;
                     this._viewUI.box_top_right.right = 28;
                     this._viewUI.box_bottom_right.right = 12;
                 }
