@@ -41,6 +41,7 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "fk.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "nyl.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "yq.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "ksyx.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
