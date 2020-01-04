@@ -106,7 +106,7 @@ module gamerddz.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "chongzhi.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
-                PathGameTongyong.atlas_game_ui_tongyong_general + "icon_money.png",
+                PathGameTongyong.ui_tongyong_general + "icon_money.png",
             ];
         }
 
