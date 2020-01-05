@@ -77,7 +77,6 @@ module gamerddz.page {
             super(v, onOpenFunc, onCloseFunc);
             this._isNeedDuang = false;
             this._asset = [
-                DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
                 Path_game_rddz.atlas_game_ui_ddz_effect + "feiji.atlas",
                 Path_game_rddz.atlas_game_ui_ddz_effect + "huojian.atlas",

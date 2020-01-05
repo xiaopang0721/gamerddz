@@ -17,7 +17,6 @@ module gamerddz.page {
 
 
 			this["__needLoadAsset"] = [
-				DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_rddz.atlas_game_ui + "doudizhu.atlas",
                 Path_game_rddz.atlas_game_ui_ddz_effect + "feiji.atlas",
                 Path_game_rddz.atlas_game_ui_ddz_effect + "huojian.atlas",
